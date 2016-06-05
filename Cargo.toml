@@ -3,5 +3,8 @@ name = "integer-encoding"
 version = "0.9.0"
 authors = ["Lewin Bormann <lbo@spheniscida.de>"]
 description = "Trait-based encoding/decoding of integers into/from varint+zigzag/fixedint representation"
+repository = "git@github.com:dermesser/integer-encoding-rs.git"
+license = "MIT"
+license-file = "LICENSE"
 
 [dependencies]
