@@ -24,13 +24,14 @@ fn required_encoded_space_signed(v: i64) -> usize {
 pub trait VarInt : Sized + Copy {
     /// Returns the number of bytes this number needs in its encoded form.
     fn required_space(self) -> usize;
-    /// Decode a value from the slice.
-    fn decode_var(&[u8]) -> Self;
+    /// Decode a value from the slice. Returns the value and the number of bytes read from the
+    /// slice (can be used to read several consecutive values from a big slice)
+    fn decode_var(&[u8]) -> (Self, usize);
     /// Encode a value into the slice.
     fn encode_var(self, &mut [u8]) -> usize;
 
     /// Helper: (bit useless) - Decode value from the Vec.
-    fn decode_var_vec(v: &Vec<u8>) -> Self {
+    fn decode_var_vec(v: &Vec<u8>) -> (Self, usize) {
         Self::decode_var(&v)
     }
     /// Helper: Encode a value and return the encoded form as Vec.
@@ -69,7 +70,7 @@ impl VarInt for u64 {
         required_encoded_space_unsigned(self)
     }
 
-    fn decode_var(src: &[u8]) -> Self {
+    fn decode_var(src: &[u8]) -> (Self, usize) {
         let mut result: u64 = 0;
         let mut shift = 0;
 
@@ -83,7 +84,7 @@ impl VarInt for u64 {
             }
         }
 
-        result
+        (result, shift / 7 as usize)
     }
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
@@ -111,7 +112,7 @@ impl VarInt for u32 {
         required_encoded_space_unsigned(self as u64)
     }
 
-    fn decode_var(src: &[u8]) -> Self {
+    fn decode_var(src: &[u8]) -> (Self, usize) {
         let mut result: u32 = 0;
         let mut shift = 0;
 
@@ -125,7 +126,7 @@ impl VarInt for u32 {
             }
         }
 
-        result
+        (result, shift / 7 as usize)
     }
 
     fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -154,7 +155,7 @@ impl VarInt for u16 {
         required_encoded_space_unsigned(self as u64)
     }
 
-    fn decode_var(src: &[u8]) -> Self {
+    fn decode_var(src: &[u8]) -> (Self, usize) {
         let mut result: u16 = 0;
         let mut shift = 0;
 
@@ -168,7 +169,7 @@ impl VarInt for u16 {
             }
         }
 
-        result
+        (result, shift / 7 as usize)
     }
 
     fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -197,7 +198,7 @@ impl VarInt for i64 {
         required_encoded_space_signed(self)
     }
 
-    fn decode_var(src: &[u8]) -> Self {
+    fn decode_var(src: &[u8]) -> (Self, usize) {
         let mut result: u64 = 0;
         let mut shift = 0;
 
@@ -211,7 +212,7 @@ impl VarInt for i64 {
             }
         }
 
-        zigzag_decode(result) as Self
+        (zigzag_decode(result) as Self, shift / 7 as usize)
     }
 
     fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -240,7 +241,7 @@ impl VarInt for i32 {
         required_encoded_space_signed(self as i64)
     }
 
-    fn decode_var(src: &[u8]) -> Self {
+    fn decode_var(src: &[u8]) -> (Self, usize) {
         let mut result: u64 = 0;
         let mut shift = 0;
 
@@ -254,7 +255,7 @@ impl VarInt for i32 {
             }
         }
 
-        zigzag_decode(result) as Self
+        (zigzag_decode(result) as Self, shift / 7 as usize)
     }
 
     fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -283,7 +284,7 @@ impl VarInt for i16 {
         required_encoded_space_signed(self as i64)
     }
 
-    fn decode_var(src: &[u8]) -> Self {
+    fn decode_var(src: &[u8]) -> (Self, usize) {
         let mut result: u64 = 0;
         let mut shift = 0;
 
@@ -297,7 +298,7 @@ impl VarInt for i16 {
             }
         }
 
-        zigzag_decode(result) as Self
+        (zigzag_decode(result) as Self, shift / 7 as usize)
     }
 
     fn encode_var(self, dst: &mut [u8]) -> usize {

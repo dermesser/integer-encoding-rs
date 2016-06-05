@@ -1,11 +1,10 @@
 [package]
 name = "integer-encoding"
-version = "0.9.2"
+version = "0.10.0"
 authors = ["Lewin Bormann <lbo@spheniscida.de>"]
 description = "varint+zigzag and fixedint integer encoding/decoding (https://developers.google.com/protocol-buffers/docs/encoding)"
 repository = "https://github.com/dermesser/integer-encoding-rs"
 documentation = "http://dermesser.github.io/integer-encoding-rs/doc/integer_encoding/"
-license = "MIT"
 license-file = "LICENSE"
 keywords = ["integer", "varint", "zigzag", "protobuf", "serialize"]
 

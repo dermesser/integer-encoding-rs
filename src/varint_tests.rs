@@ -19,7 +19,10 @@ mod tests {
     #[test]
     fn test_identity_u64() {
         for i in 1 as u64..100 {
-            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), i);
+            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i,1));
+        }
+        for i in 16400 as u64..16500 {
+            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i,3));
         }
     }
 
