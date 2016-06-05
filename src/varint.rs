@@ -18,17 +18,22 @@ fn required_encoded_space_signed(v: i64) -> usize {
     required_encoded_space_unsigned(zigzag_encode(v))
 }
 
-// implementable for all ints, basically. Bounds are required for the required_space() default
-// implementation.
+/// Varint (variable length integer) encoding, as described in
+/// https://developers.google.com/protocol-buffers/docs/encoding.
+/// Uses zigzag encoding (also described there) for signed integer representation.
 pub trait VarInt : Sized + Copy {
-    // How many bytes this number needs in varint representation
+    /// Returns the number of bytes this number needs in its encoded form.
     fn required_space(self) -> usize;
+    /// Decode a value from the slice.
     fn decode_var(&[u8]) -> Self;
+    /// Encode a value into the slice.
     fn encode_var(self, &mut [u8]) -> usize;
 
+    /// Helper: (bit useless) - Decode value from the Vec.
     fn decode_var_vec(v: &Vec<u8>) -> Self {
         Self::decode_var(&v)
     }
+    /// Helper: Encode a value and return the encoded form as Vec.
     fn encode_var_vec(self) -> Vec<u8> {
         let mut v = Vec::new();
         v.resize(self.required_space(), 0);
