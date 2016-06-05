@@ -1,5 +1,7 @@
 # integer-encoding-rs
 
+[full documentation](http://dermesser.github.io/integer-encoding-rs/doc/integer_encoding/)
+
 This crate provides encoding and decoding of integers to and from bytestring
 representations.
 
