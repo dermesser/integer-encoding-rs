@@ -11,8 +11,7 @@ The format is the same -- and compatible with --
 `FixedInt` basically executes a `memcpy()` from integer values to bytestrings
 and back. Formally, it uses little-endian byte order for encoded values --
 however, this crate does not check the architecture for its byte order (so if
-you run on non-x86 or armel or any other little-endian architecture, this might
-cause issues).
+you run on a big-endian architecture, this will cause issues).
 
 ## VarInt
 
