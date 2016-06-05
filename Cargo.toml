@@ -7,6 +7,6 @@ repository = "https://github.com/dermesser/integer-encoding-rs"
 documentation = "http://dermesser.github.io/integer-encoding-rs/doc/integer_encoding/"
 license = "MIT"
 license-file = "LICENSE"
-keywords = ["encoding", "integer", "varint", "zigzag", "protobuf", "serialize"]
+keywords = ["integer", "varint", "zigzag", "protobuf", "serialize"]
 
 [dependencies]
