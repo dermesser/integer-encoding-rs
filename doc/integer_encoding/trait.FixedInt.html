@@ -49,7 +49,7 @@
                    </a>
                </span><a id='src-7' class='srclink' href='../src/integer_encoding/src/fixed.rs.html#6-26' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait FixedInt: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> {
-    fn <a href='#tymethod.size_required' class='fnname'>size_required</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
+    fn <a href='#tymethod.required_space' class='fnname'>required_space</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
     fn <a href='#tymethod.encode_fixed' class='fnname'>encode_fixed</a>(self, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>);
     fn <a href='#tymethod.decode_fixed' class='fnname'>decode_fixed</a>(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; Self;
 
@@ -60,7 +60,7 @@ The emitted bytestring contains the bytes of the integer in little-endian order.
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.size_required' class='method stab '><code>fn <a href='#tymethod.size_required' class='fnname'>size_required</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h3><div class='docblock'><p>Returns how many bytes are required to represent the given type.</p>
+        <h3 id='tymethod.required_space' class='method stab '><code>fn <a href='#tymethod.required_space' class='fnname'>required_space</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h3><div class='docblock'><p>Returns how many bytes are required to represent the given type.</p>
 </div><h3 id='tymethod.encode_fixed' class='method stab '><code>fn <a href='#tymethod.encode_fixed' class='fnname'>encode_fixed</a>(self, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></h3><div class='docblock'><p>Encode a value into the given slice.</p>
 </div><h3 id='tymethod.decode_fixed' class='method stab '><code>fn <a href='#tymethod.decode_fixed' class='fnname'>decode_fixed</a>(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; Self</code></h3><div class='docblock'><p>Decode a value from the given slice.</p>
 </div></div>
@@ -71,9 +71,11 @@ The emitted bytestring contains the bytes of the integer in little-endian order.
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></li>
+    <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></li>
+<li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></li>
 <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></li>
 <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></li>
+<li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a></code></li>
 <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a></code></li>
 <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></li>
 <li><code>impl <a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i16.html'>i16</a></code></li>
