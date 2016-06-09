@@ -5,8 +5,7 @@
 This crate provides encoding and decoding of integers to and from bytestring
 representations.
 
-The format is the same -- and compatible with --
-[Google's protobuf integer encoding technique](https://developers.google.com/protocol-buffers/docs/encoding).
+The format is described here: [Google's protobuf integer encoding technique](https://developers.google.com/protocol-buffers/docs/encoding).
 
 ## FixedInt
 
