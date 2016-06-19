@@ -4,6 +4,7 @@ mod tests {
 
     #[test]
     fn test_required_space() {
+        assert_eq!((0 as u32).required_space(), 1);
         assert_eq!((1 as u32).required_space(), 1);
         assert_eq!((128 as u32).required_space(), 2);
         assert_eq!((16384 as u32).required_space(), 3);
@@ -13,6 +14,7 @@ mod tests {
 
     #[test]
     fn test_encode_u64() {
+        assert_eq!((0 as u32).encode_var_vec(), vec![0b00000000]);
         assert_eq!((300 as u32).encode_var_vec(), vec![0b10101100, 0b00000010]);
     }
 
@@ -28,6 +30,7 @@ mod tests {
 
     #[test]
     fn test_encode_i64() {
+        assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
         assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());
         assert_eq!((-150 as i64).encode_var_vec(),
                    (299 as u32).encode_var_vec());

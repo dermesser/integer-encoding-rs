@@ -5,6 +5,10 @@ const EXTRACT_SEVEN: u8 = DROP_MSB;
 
 #[inline]
 fn required_encoded_space_unsigned(mut v: u64) -> usize {
+    if v == 0 {
+        return 1;
+    }
+
     let mut logcounter = 0;
     while v > 0 {
         logcounter += 1;
@@ -109,8 +113,6 @@ impl VarInt for u16 {
     }
 }
 
-// Duplicating the decode/encode logic is easier than hacking together default implementations
-// with trait bounds.
 impl VarInt for u64 {
     fn required_space(self) -> usize {
         required_encoded_space_unsigned(self)
