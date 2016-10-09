@@ -1,5 +1,5 @@
 
-const MSB: u8 = 0b10000000;
+pub const MSB: u8 = 0b10000000;
 const DROP_MSB: u8 = 0b01111111;
 const EXTRACT_SEVEN: u8 = DROP_MSB;
 
