@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["VarInt","Varint (variable length integer) encoding, as described in https://developers.google.com/protocol-buffers/docs/encoding. Uses zigzag encoding (also described there) for signed integer representation."]]});

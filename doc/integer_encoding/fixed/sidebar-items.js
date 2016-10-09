@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["FixedInt","FixedInt provides encoding/decoding to and from fixed int representations. The emitted bytestring contains the bytes of the integer in little-endian order."]]});
