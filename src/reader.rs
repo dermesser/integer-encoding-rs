@@ -3,7 +3,9 @@ use std::io::{Result, Read};
 use varint::{MSB, VarInt};
 use fixed::FixedInt;
 
-// It's recommended to use a buffered reader, as many small reads will happen.
+/// A trait for reading VarInts from any other `Reader`.
+///
+/// It's recommended to use a buffered reader, as many small reads will happen.
 pub trait VarIntReader {
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI>;
 }
@@ -29,6 +31,7 @@ impl<R: Read> VarIntReader for R {
     }
 }
 
+/// A trait for reading FixedInts from any other `Reader`.
 pub trait FixedIntReader {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI>;
 }

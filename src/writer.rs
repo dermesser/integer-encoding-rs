@@ -3,6 +3,7 @@ use std::io::{Result, Write};
 use fixed::FixedInt;
 use varint::VarInt;
 
+/// A trait for writing integers in VarInt encoding to any `Write` type.
 pub trait VarIntWriter {
     fn write_varint<VI: VarInt>(&mut self, n: VI) -> Result<usize>;
 }
@@ -16,6 +17,7 @@ impl<Inner: Write> VarIntWriter for Inner {
     }
 }
 
+/// A trait for writing integers without encoding (i.e. `FixedInt`) to any `Write` type.
 pub trait FixedIntWriter {
     fn write_fixedint<FI: FixedInt>(&mut self, n: FI) -> Result<usize>;
 }
