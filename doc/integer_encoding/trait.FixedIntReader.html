@@ -47,14 +47,17 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-337' class='srclink' href='../src/integer_encoding/src/reader.rs.html#35-37' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-339' class='srclink' href='../src/integer_encoding/src/reader.rs.html#48-53' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait FixedIntReader {
     fn <a href='#tymethod.read_fixedint' class='fnname'>read_fixedint</a>&lt;FI:&nbsp;<a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a>&gt;(&amp;mut self) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;FI&gt;;
 }</pre><div class='docblock'><p>A trait for reading FixedInts from any other <code>Reader</code>.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.read_fixedint' class='method stab '><code>fn <a href='#tymethod.read_fixedint' class='fnname'>read_fixedint</a>&lt;FI:&nbsp;<a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a>&gt;(&amp;mut self) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;FI&gt;</code></h3></div>
+        <h3 id='tymethod.read_fixedint' class='method stab '><code>fn <a href='#tymethod.read_fixedint' class='fnname'>read_fixedint</a>&lt;FI:&nbsp;<a class='trait' href='../integer_encoding/trait.FixedInt.html' title='integer_encoding::FixedInt'>FixedInt</a>&gt;(&amp;mut self) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;FI&gt;</code></h3><div class='docblock'><p>Read a fixed integer from a reader. How many bytes are read depends on <code>FI</code>.</p>
+
+<p>On EOF, an io::Error with io::ErrorKind::UnexpectedEof is returned.</p>
+</div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
     <li><code>impl&lt;R:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; FixedIntReader for R</code></li>

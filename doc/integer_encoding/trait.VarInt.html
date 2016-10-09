@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-201' class='srclink' href='../src/integer_encoding/src/varint.rs.html#24-44' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-210' class='srclink' href='../src/integer_encoding/src/varint.rs.html#28-48' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait VarInt: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> {
     fn <a href='#tymethod.required_space' class='fnname'>required_space</a>(self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
     fn <a href='#tymethod.decode_var' class='fnname'>decode_var</a>(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a>Self, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>;
@@ -73,14 +73,14 @@ slice (can be used to read several consecutive values from a big slice)</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i16.html'>i16</a></code></li>
-<li><code>impl <a class='trait' href='../integer_encoding/trait.VarInt.html' title='integer_encoding::VarInt'>VarInt</a> for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a></code></li>
+    <li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i16.html'>i16</a></code></li>
+<li><code>impl VarInt for <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a></code></li>
 </ul><script type="text/javascript" async
                          src="../implementors/integer_encoding/trait.VarInt.js">
                  </script></section>
@@ -106,6 +106,8 @@ slice (can be used to read several consecutive values from a big slice)</p>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 

@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/integer_encoding/src/lib.rs.html#2-9' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-0' class='srclink' href='../src/integer_encoding/src/lib.rs.html#2-17' title='goto source code'>[src]</a></span></h1>
 <h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -59,12 +59,40 @@ The emitted bytestring contains the bytes of the integer in little-endian order.
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='trait' href='trait.FixedIntReader.html'
+                                  title='integer_encoding::FixedIntReader'>FixedIntReader</a></td>
+                           <td class='docblock short'>
+                                <p>A trait for reading FixedInts from any other <code>Reader</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.FixedIntWriter.html'
+                                  title='integer_encoding::FixedIntWriter'>FixedIntWriter</a></td>
+                           <td class='docblock short'>
+                                <p>A trait for writing integers without encoding (i.e. <code>FixedInt</code>) to any <code>Write</code> type.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='trait' href='trait.VarInt.html'
                                   title='integer_encoding::VarInt'>VarInt</a></td>
                            <td class='docblock short'>
                                 <p>Varint (variable length integer) encoding, as described in
 <a href="https://developers.google.com/protocol-buffers/docs/encoding">https://developers.google.com/protocol-buffers/docs/encoding</a>.
 Uses zigzag encoding (also described there) for signed integer representation.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.VarIntReader.html'
+                                  title='integer_encoding::VarIntReader'>VarIntReader</a></td>
+                           <td class='docblock short'>
+                                <p>A trait for reading VarInts from any other <code>Reader</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.VarIntWriter.html'
+                                  title='integer_encoding::VarIntWriter'>VarIntWriter</a></td>
+                           <td class='docblock short'>
+                                <p>A trait for writing integers in VarInt encoding to any <code>Write</code> type.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
@@ -89,6 +117,8 @@ Uses zigzag encoding (also described there) for signed integer representation.</
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
