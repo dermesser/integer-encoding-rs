@@ -1,3 +1,5 @@
+
+use std::io;
 use std::io::{Result, Read};
 
 use varint::{MSB, VarInt};
@@ -16,7 +18,12 @@ impl<R: Read> VarIntReader for R {
         let mut i = 0;
 
         loop {
-            try!(self.read(&mut buf[i..i + 1]));
+            let read = try!(self.read(&mut buf[i..i + 1]));
+
+            // EOF
+            if read == 0 && i == 0 {
+                return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
+            }
 
             if buf[i] & MSB == 0 {
                 break;
@@ -40,8 +47,12 @@ impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
 
-        let used = try!(self.read(&mut buf[0..FI::required_space()]));
+        let read = try!(self.read(&mut buf[0..FI::required_space()]));
 
-        Ok(FI::decode_fixed(&buf[0..used]))
+        if read == 0 {
+            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
+        }
+
+        Ok(FI::decode_fixed(&buf[0..read]))
     }
 }

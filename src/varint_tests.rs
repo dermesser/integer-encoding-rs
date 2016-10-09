@@ -70,5 +70,7 @@ mod tests {
         assert_eq!(i3, reader.read_varint().unwrap());
         assert_eq!(i4, reader.read_varint().unwrap());
         assert_eq!(i5, reader.read_varint().unwrap());
+
+        assert!(reader.read_varint::<u32>().is_err());
     }
 }

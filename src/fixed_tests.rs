@@ -65,5 +65,7 @@ mod tests {
         assert_eq!(i1, i1_res);
         assert_eq!(i2, i2_res);
         assert_eq!(i3, i3_res);
+
+        assert!(reader.read_fixedint::<u32>().is_err());
     }
 }
