@@ -2,7 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/integer-encoding.svg)](https://crates.io/crates/integer-encoding)
 
-[full documentation](http://dermesser.github.io/integer-encoding-rs/doc/integer_encoding/)
+[full documentation](https://docs.rs/integer-encoding/)
 
 This crate provides encoding and decoding of integers to and from bytestring
 representations.
