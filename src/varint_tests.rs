@@ -31,6 +31,13 @@ mod tests {
     }
 
     #[test]
+    fn test_decode_max_u64() {
+        let mut max_vec_encoded = vec![0u8; 10];
+        max_vec_encoded.copy_from_slice(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        assert_eq!(u64::decode_var_vec(&max_vec_encoded).0, u64::max_value());
+    }
+
+    #[test]
     fn test_encode_i64() {
         assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
         assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());
@@ -38,6 +45,24 @@ mod tests {
                    (299 as u32).encode_var_vec());
         assert_eq!((-2147483648 as i64).encode_var_vec(),
                    (4294967295 as u64).encode_var_vec());
+        assert_eq!((i64::max_value() as i64).encode_var_vec(),
+                   &[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        assert_eq!((i64::min_value() as i64).encode_var_vec(),
+                   &[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+    }
+
+    #[test]
+    fn test_decode_min_i64() {
+        let mut min_vec_encoded = vec![0u8; 10];
+        min_vec_encoded.copy_from_slice(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        assert_eq!(i64::decode_var_vec(&min_vec_encoded).0, i64::min_value());
+    }
+
+    #[test]
+    fn test_decode_max_i64() {
+        let mut max_vec_encoded = vec![0u8; 10];
+        max_vec_encoded.copy_from_slice(&[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        assert_eq!(i64::decode_var_vec(&max_vec_encoded).0, i64::max_value());
     }
 
     #[test]
