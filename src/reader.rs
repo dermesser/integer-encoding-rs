@@ -20,7 +20,7 @@ pub trait VarIntReader {
 
 impl<R: Read> VarIntReader for R {
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI> {
-        let mut buf = [0 as u8; 8];
+        let mut buf = [0 as u8; 10];
         let mut i = 0;
 
         loop {
