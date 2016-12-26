@@ -49,13 +49,7 @@ pub trait VarInt: Sized + Copy {
 
 #[inline]
 fn zigzag_encode(from: i64) -> u64 {
-    if from < 0 {
-        (2 * -from) as u64 - 1
-    } else if from > 0 {
-        2 * from as u64
-    } else {
-        0
-    }
+    ((from << 1) ^ (from >> 63)) as u64
 }
 
 #[inline]
