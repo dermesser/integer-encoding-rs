@@ -49,22 +49,15 @@ pub trait VarInt: Sized + Copy {
 
 #[inline]
 fn zigzag_encode(from: i64) -> u64 {
-    if from < 0 {
-        (2 * -from) as u64 - 1
-    } else if from > 0 {
-        2 * from as u64
-    } else {
-        0
-    }
+    ((from << 1) ^ (from >> 63)) as u64
 }
 
+// see: http://stackoverflow.com/a/2211086/56332
+// casting required because operations like unary negation
+// cannot be performed on unsigned integers
 #[inline]
 fn zigzag_decode(from: u64) -> i64 {
-    if from % 2 == 0 {
-        from as i64 / 2
-    } else {
-        -((from as i64 + 1) / 2)
-    }
+    ((from >> 1) ^ (-((from & 1) as i64)) as u64) as i64
 }
 
 // usize is encoded as u64.
