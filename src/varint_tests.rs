@@ -58,8 +58,7 @@ mod tests {
 
     #[test]
     fn test_decode_max_i64() {
-        let mut max_vec_encoded = vec![0u8; 10];
-        max_vec_encoded.copy_from_slice(&[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        let max_vec_encoded = vec![0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(i64::decode_var_vec(&max_vec_encoded).0, i64::max_value());
     }
 
