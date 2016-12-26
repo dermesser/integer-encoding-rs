@@ -32,8 +32,7 @@ mod tests {
 
     #[test]
     fn test_decode_max_u64() {
-        let mut max_vec_encoded = vec![0u8; 10];
-        max_vec_encoded.copy_from_slice(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        let max_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(u64::decode_var_vec(&max_vec_encoded).0, u64::max_value());
     }
 
@@ -53,8 +52,7 @@ mod tests {
 
     #[test]
     fn test_decode_min_i64() {
-        let mut min_vec_encoded = vec![0u8; 10];
-        min_vec_encoded.copy_from_slice(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        let min_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(i64::decode_var_vec(&min_vec_encoded).0, i64::min_value());
     }
 
