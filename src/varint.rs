@@ -60,51 +60,53 @@ fn zigzag_decode(from: u64) -> i64 {
     ((from >> 1) ^ (-((from & 1) as i64)) as u64) as i64
 }
 
-// usize is encoded as u64.
-impl VarInt for usize {
-    fn required_space(self) -> usize {
-        required_encoded_space_unsigned(self as u64)
-    }
+macro_rules! impl_varint {
+  ($t:ty, unsigned) => {
+        impl VarInt for $t {
+            fn required_space(self) -> usize {
+                required_encoded_space_unsigned(self as u64)
+            }
 
-    fn decode_var(src: &[u8]) -> (Self, usize) {
-        let (n, s) = u64::decode_var(src);
-        (n as Self, s)
-    }
+            fn decode_var(src: &[u8]) -> (Self, usize) {
+                let (n, s) = u64::decode_var(src);
+                (n as Self, s)
+            }
 
-    fn encode_var(self, dst: &mut [u8]) -> usize {
-        (self as u64).encode_var(dst)
-    }
+            fn encode_var(self, dst: &mut [u8]) -> usize {
+                (self as u64).encode_var(dst)
+            }
+        }
+  };
+  ($t:ty, signed) => {
+        impl VarInt for $t {
+            fn required_space(self) -> usize {
+                required_encoded_space_signed(self as i64)
+            }
+
+            fn decode_var(src: &[u8]) -> (Self, usize) {
+                let (n, s) = i64::decode_var(src);
+                (n as Self, s)
+            }
+
+            fn encode_var(self, dst: &mut [u8]) -> usize {
+                (self as i64).encode_var(dst)
+            }
+        }
+  }
 }
 
-impl VarInt for u32 {
-    fn required_space(self) -> usize {
-        required_encoded_space_unsigned(self as u64)
-    }
+impl_varint!(usize, unsigned);
+impl_varint!(u32, unsigned);
+impl_varint!(u16, unsigned);
+impl_varint!(u8, unsigned);
 
-    fn decode_var(src: &[u8]) -> (Self, usize) {
-        let (n, s) = u64::decode_var(src);
-        (n as Self, s)
-    }
+impl_varint!(isize, signed);
+impl_varint!(i32, signed);
+impl_varint!(i16, signed);
+impl_varint!(i8, signed);
 
-    fn encode_var(self, dst: &mut [u8]) -> usize {
-        (self as u64).encode_var(dst)
-    }
-}
-
-impl VarInt for u16 {
-    fn required_space(self) -> usize {
-        required_encoded_space_unsigned(self as u64)
-    }
-
-    fn decode_var(src: &[u8]) -> (Self, usize) {
-        let (n, s) = u64::decode_var(src);
-        (n as Self, s)
-    }
-
-    fn encode_var(self, dst: &mut [u8]) -> usize {
-        (self as u64).encode_var(dst)
-    }
-}
+// Below are the "base implementations" doing the actual encodings; all other integer types are
+// first cast to these biggest types before being encoded.
 
 impl VarInt for u64 {
     fn required_space(self) -> usize {
@@ -145,52 +147,6 @@ impl VarInt for u64 {
             dst[0] = 0;
             1
         }
-    }
-}
-
-// isize is encoded as i64.
-impl VarInt for isize {
-    fn required_space(self) -> usize {
-        required_encoded_space_signed(self as i64)
-    }
-
-    fn decode_var(src: &[u8]) -> (Self, usize) {
-        let (n, s) = i64::decode_var(src);
-        (n as Self, s)
-    }
-
-    fn encode_var(self, dst: &mut [u8]) -> usize {
-        (self as i64).encode_var(dst)
-    }
-}
-
-impl VarInt for i32 {
-    fn required_space(self) -> usize {
-        required_encoded_space_signed(self as i64)
-    }
-
-    fn decode_var(src: &[u8]) -> (Self, usize) {
-        let (n, s) = i64::decode_var(src);
-        (n as Self, s)
-    }
-
-    fn encode_var(self, dst: &mut [u8]) -> usize {
-        (self as i64).encode_var(dst)
-    }
-}
-
-impl VarInt for i16 {
-    fn required_space(self) -> usize {
-        required_encoded_space_signed(self as i64)
-    }
-
-    fn decode_var(src: &[u8]) -> (Self, usize) {
-        let (n, s) = i64::decode_var(src);
-        (n as Self, s)
-    }
-
-    fn encode_var(self, dst: &mut [u8]) -> usize {
-        (self as i64).encode_var(dst)
     }
 }
 
