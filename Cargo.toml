@@ -1,6 +1,6 @@
 [package]
 name = "integer-encoding"
-version = "1.0.4"
+version = "1.0.5"
 authors = ["Lewin Bormann <lbo@spheniscida.de>"]
 description = "varint+zigzag and fixedint integer encoding/decoding (https://developers.google.com/protocol-buffers/docs/encoding)"
 repository = "https://github.com/dermesser/integer-encoding-rs"
