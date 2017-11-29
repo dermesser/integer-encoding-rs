@@ -122,7 +122,7 @@ impl VarInt for u64 {
             result |= (msb_dropped as u64) << shift;
             shift += 7;
 
-            if b & MSB == 0 {
+            if b & MSB == 0 || shift > (10 * 7) {
                 break;
             }
         }
@@ -164,7 +164,7 @@ impl VarInt for i64 {
             result |= (msb_dropped as u64) << shift;
             shift += 7;
 
-            if b & MSB == 0 {
+            if b & MSB == 0 || shift > (10 * 7) {
                 break;
             }
         }

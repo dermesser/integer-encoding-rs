@@ -20,12 +20,12 @@ pub trait VarIntReader {
 
 impl<R: Read> VarIntReader for R {
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI> {
-        const buflen: usize = 10;
-        let mut buf = [0 as u8; buflen];
+        const BUFLEN: usize = 10;
+        let mut buf = [0 as u8; BUFLEN];
         let mut i = 0;
 
         loop {
-            if i >= buflen {
+            if i >= BUFLEN {
                 return Err(io::Error::new(io::ErrorKind::InvalidData, "Unterminated varint"));
             }
 
