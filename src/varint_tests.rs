@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use varint::VarInt;
     use reader::VarIntReader;
+    use varint::VarInt;
     use writer::VarIntWriter;
 
     #[test]
@@ -40,14 +40,22 @@ mod tests {
     fn test_encode_i64() {
         assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
         assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());
-        assert_eq!((-150 as i64).encode_var_vec(),
-                   (299 as u32).encode_var_vec());
-        assert_eq!((-2147483648 as i64).encode_var_vec(),
-                   (4294967295 as u64).encode_var_vec());
-        assert_eq!((i64::max_value() as i64).encode_var_vec(),
-                   &[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
-        assert_eq!((i64::min_value() as i64).encode_var_vec(),
-                   &[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]);
+        assert_eq!(
+            (-150 as i64).encode_var_vec(),
+            (299 as u32).encode_var_vec()
+        );
+        assert_eq!(
+            (-2147483648 as i64).encode_var_vec(),
+            (4294967295 as u64).encode_var_vec()
+        );
+        assert_eq!(
+            (i64::max_value() as i64).encode_var_vec(),
+            &[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]
+        );
+        assert_eq!(
+            (i64::min_value() as i64).encode_var_vec(),
+            &[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]
+        );
     }
 
     #[test]
@@ -65,8 +73,10 @@ mod tests {
     #[test]
     fn test_encode_i16() {
         assert_eq!((150 as i16).encode_var_vec(), (300 as u32).encode_var_vec());
-        assert_eq!((-150 as i16).encode_var_vec(),
-                   (299 as u32).encode_var_vec());
+        assert_eq!(
+            (-150 as i16).encode_var_vec(),
+            (299 as u32).encode_var_vec()
+        );
     }
 
     #[test]

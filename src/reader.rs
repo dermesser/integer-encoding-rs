@@ -1,9 +1,8 @@
-
 use std::io;
-use std::io::{Result, Read};
+use std::io::{Read, Result};
 
-use varint::{MSB, VarInt};
 use fixed::FixedInt;
+use varint::{VarInt, MSB};
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
@@ -26,7 +25,10 @@ impl<R: Read> VarIntReader for R {
 
         loop {
             if i >= BUFLEN {
-                return Err(io::Error::new(io::ErrorKind::InvalidData, "Unterminated varint"));
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidData,
+                    "Unterminated varint",
+                ));
             }
 
             let read = try!(self.read(&mut buf[i..i + 1]));

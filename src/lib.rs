@@ -1,4 +1,3 @@
-
 mod fixed;
 mod fixed_tests;
 
@@ -11,7 +10,7 @@ mod writer;
 pub use fixed::FixedInt;
 pub use varint::VarInt;
 
-pub use reader::VarIntReader;
 pub use reader::FixedIntReader;
-pub use writer::VarIntWriter;
+pub use reader::VarIntReader;
 pub use writer::FixedIntWriter;
+pub use writer::VarIntWriter;

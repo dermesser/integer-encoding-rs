@@ -1,4 +1,3 @@
-
 pub const MSB: u8 = 0b10000000;
 const DROP_MSB: u8 = 0b01111111;
 const EXTRACT_SEVEN: u8 = DROP_MSB;
@@ -61,7 +60,7 @@ fn zigzag_decode(from: u64) -> i64 {
 }
 
 macro_rules! impl_varint {
-  ($t:ty, unsigned) => {
+    ($t:ty, unsigned) => {
         impl VarInt for $t {
             fn required_space(self) -> usize {
                 required_encoded_space_unsigned(self as u64)
@@ -76,8 +75,8 @@ macro_rules! impl_varint {
                 (self as u64).encode_var(dst)
             }
         }
-  };
-  ($t:ty, signed) => {
+    };
+    ($t:ty, signed) => {
         impl VarInt for $t {
             fn required_space(self) -> usize {
                 required_encoded_space_signed(self as i64)
@@ -92,7 +91,7 @@ macro_rules! impl_varint {
                 (self as i64).encode_var(dst)
             }
         }
-  }
+    };
 }
 
 impl_varint!(usize, unsigned);
