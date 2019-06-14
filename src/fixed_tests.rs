@@ -25,6 +25,23 @@ mod tests {
         let result = (-32767 as i32).encode_fixed_vec();
         assert_eq!(result, vec![1, 128, 255, 255]);
     }
+
+    // This must fail to compile:
+    /*
+    fn test() -> &'static [u8] {
+        let int = -32767 as i32;
+        let result = int.encode_fixed_light();
+        assert_eq!(result, &[1, 128, 255, 255]);
+        result
+    }
+    */
+
+    #[test]
+    fn test_i32_enc_light() {
+        let int = -32767 as i32;
+        let result = int.encode_fixed_light();
+        assert_eq!(result, &[1, 128, 255, 255]);
+    }
     #[test]
     fn test_all_identity() {
         let a: u16 = 17;
@@ -40,6 +57,13 @@ mod tests {
         assert_eq!(d, FixedInt::decode_fixed_vec(&d.encode_fixed_vec()));
         assert_eq!(e, FixedInt::decode_fixed_vec(&e.encode_fixed_vec()));
         assert_eq!(f, FixedInt::decode_fixed_vec(&f.encode_fixed_vec()));
+
+        assert_eq!(a, FixedInt::decode_fixed(&a.encode_fixed_light()));
+        assert_eq!(b, FixedInt::decode_fixed(&b.encode_fixed_light()));
+        assert_eq!(c, FixedInt::decode_fixed(&c.encode_fixed_light()));
+        assert_eq!(d, FixedInt::decode_fixed(&d.encode_fixed_light()));
+        assert_eq!(e, FixedInt::decode_fixed(&e.encode_fixed_light()));
+        assert_eq!(f, FixedInt::decode_fixed(&f.encode_fixed_light()));
     }
 
     #[test]
