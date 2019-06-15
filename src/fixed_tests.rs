@@ -96,7 +96,7 @@ mod tests {
     #[should_panic]
     #[test]
     fn test_invalid_decode_size() {
-        assert_eq!(33, u64::decode_fixed(&[1,0,0,0,0,1]));
+        assert_eq!(33, u64::decode_fixed(&[1, 0, 0, 0, 0, 1]));
     }
     #[should_panic]
     #[test]

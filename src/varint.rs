@@ -32,6 +32,7 @@ pub trait VarInt: Sized + Copy {
     /// slice (can be used to read several consecutive values from a big slice)
     fn decode_var(&[u8]) -> (Self, usize);
     /// Encode a value into the slice. The slice must be at least `required_space()` bytes long.
+    /// The number of bytes taken by the encoded integer is returned.
     fn encode_var(self, &mut [u8]) -> usize;
 
     /// Helper: (bit useless) - Decode value from the Vec.
