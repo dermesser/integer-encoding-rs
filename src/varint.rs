@@ -25,19 +25,21 @@ fn required_encoded_space_signed(v: i64) -> usize {
 /// https://developers.google.com/protocol-buffers/docs/encoding.
 /// Uses zigzag encoding (also described there) for signed integer representation.
 pub trait VarInt: Sized + Copy {
-    /// Returns the number of bytes this number needs in its encoded form.
+    /// Returns the number of bytes this number needs in its encoded form. Note: This varies
+    /// depending on the actual number you want to encode.
     fn required_space(self) -> usize;
     /// Decode a value from the slice. Returns the value and the number of bytes read from the
     /// slice (can be used to read several consecutive values from a big slice)
     fn decode_var(&[u8]) -> (Self, usize);
-    /// Encode a value into the slice.
+    /// Encode a value into the slice. The slice must be at least `required_space()` bytes long.
     fn encode_var(self, &mut [u8]) -> usize;
 
     /// Helper: (bit useless) - Decode value from the Vec.
     fn decode_var_vec(v: &Vec<u8>) -> (Self, usize) {
         Self::decode_var(&v)
     }
-    /// Helper: Encode a value and return the encoded form as Vec.
+    /// Helper: Encode a value and return the encoded form as Vec. The Vec must be at least
+    /// `required_space()` bytes long.
     fn encode_var_vec(self) -> Vec<u8> {
         let mut v = Vec::new();
         v.resize(self.required_space(), 0);
