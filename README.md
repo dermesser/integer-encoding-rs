@@ -12,10 +12,9 @@ The format is described here: [Google's protobuf integer encoding technique](htt
 
 ## FixedInt
 
-`FixedInt` basically executes a `memcpy()` from integer values to bytestrings
-and back. Formally, it uses little-endian byte order for encoded values --
-however, this crate does not check the architecture for its byte order (so if
-you run on a big-endian architecture, this will cause issues).
+`FixedInt` casts integers to bytes by either copying the underlying memory or
+performing a transmutation. The encoded values use machine endianness
+(little-endian on x86).
 
 ## VarInt
 
