@@ -1,5 +1,3 @@
-use std::mem::transmute;
-
 /// FixedInt provides encoding/decoding to and from fixed int representations.
 /// The emitted bytestring contains the bytes of the integer in machine endianness.
 pub trait FixedInt: Sized + Copy {
@@ -12,7 +10,7 @@ pub trait FixedInt: Sized + Copy {
     fn decode_fixed(&[u8]) -> Self;
     /// Perform a transmute, i.e. return a "view" into the integer's memory, which is faster than
     /// performing a copy.
-    fn encode_fixed_light<'a>(&'a self) -> &'a [u8];
+    fn encode_fixed_light(&self) -> &[u8];
 
     /// Helper: Encode the value and return a Vec.
     fn encode_fixed_vec(self) -> Vec<u8> {
@@ -22,7 +20,7 @@ pub trait FixedInt: Sized + Copy {
         v
     }
     /// Helper: Decode the value from the Vec.
-    fn decode_fixed_vec(v: &Vec<u8>) -> Self {
+    fn decode_fixed_vec(v: &[u8]) -> Self {
         assert_eq!(v.len(), Self::required_space());
         Self::decode_fixed(&v[..])
     }
@@ -37,23 +35,20 @@ macro_rules! impl_fixedint {
                 Self::REQUIRED_SPACE
             }
 
-            fn encode_fixed_light<'a>(&'a self) -> &'a [u8] {
+            fn encode_fixed_light(&self) -> &[u8] {
                 return unsafe {
-                    std::slice::from_raw_parts(
-                        transmute::<&$t, *const u8>(&self),
-                        Self::REQUIRED_SPACE,
-                    )
+                    std::slice::from_raw_parts(self as *const $t as *const u8, Self::REQUIRED_SPACE)
                 };
             }
 
             fn encode_fixed(self, dst: &mut [u8]) {
                 assert_eq!(dst.len(), Self::REQUIRED_SPACE);
-                let encoded = unsafe { transmute::<&$t, &[u8; $sz]>(&self) };
+                let encoded = unsafe { &*(&self as *const $t as *const [u8; $sz]) };
                 dst.clone_from_slice(encoded);
             }
             fn decode_fixed(src: &[u8]) -> $t {
                 assert_eq!(src.len(), Self::REQUIRED_SPACE);
-                return unsafe { *transmute::<*const u8, &$t>(src.as_ptr()) };
+                return unsafe { *(src.as_ptr() as *const $t) };
             }
         }
     };

@@ -1,5 +1,5 @@
-pub const MSB: u8 = 0b10000000;
-const DROP_MSB: u8 = 0b01111111;
+pub const MSB: u8 = 0b1000_0000;
+const DROP_MSB: u8 = 0b0111_1111;
 const EXTRACT_SEVEN: u8 = DROP_MSB;
 
 #[inline]
@@ -36,7 +36,7 @@ pub trait VarInt: Sized + Copy {
     fn encode_var(self, &mut [u8]) -> usize;
 
     /// Helper: (bit useless) - Decode value from the Vec.
-    fn decode_var_vec(v: &Vec<u8>) -> (Self, usize) {
+    fn decode_var_vec(v: &[u8]) -> (Self, usize) {
         Self::decode_var(&v)
     }
     /// Helper: Encode a value and return the encoded form as Vec. The Vec must be at least
@@ -143,7 +143,7 @@ impl VarInt for u64 {
                 n >>= 7;
             }
 
-            dst[i - 1] = DROP_MSB & dst[i - 1];
+            dst[i - 1] &= DROP_MSB;
             i
         } else {
             dst[0] = 0;
@@ -186,7 +186,7 @@ impl VarInt for i64 {
                 n >>= 7;
             }
 
-            dst[i - 1] = DROP_MSB & dst[i - 1];
+            dst[i - 1] &= DROP_MSB;
             i
         } else {
             dst[0] = 0;

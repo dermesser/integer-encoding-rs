@@ -31,7 +31,7 @@ impl<R: Read> VarIntReader for R {
                 ));
             }
 
-            let read = try!(self.read(&mut buf[i..i + 1]));
+            let read = self.read(&mut buf[i..=i])?;
 
             // EOF
             if read == 0 && i == 0 {
@@ -45,7 +45,7 @@ impl<R: Read> VarIntReader for R {
             i += 1;
         }
 
-        let (result, _) = VI::decode_var(&buf[0..i + 1]);
+        let (result, _) = VI::decode_var(&buf[0..=i]);
 
         Ok(result)
     }
@@ -63,7 +63,7 @@ impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
 
-        let read = try!(self.read(&mut buf[0..FI::required_space()]));
+        let read = self.read(&mut buf[0..FI::required_space()])?;
 
         if read == 0 {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
