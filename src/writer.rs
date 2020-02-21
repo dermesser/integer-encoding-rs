@@ -1,7 +1,7 @@
 use std::io::{Result, Write};
 
-use fixed::FixedInt;
-use varint::VarInt;
+use crate::fixed::FixedInt;
+use crate::varint::VarInt;
 
 /// A trait for writing integers in VarInt encoding to any `Write` type.
 pub trait VarIntWriter {

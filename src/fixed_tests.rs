@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod tests {
-    use fixed::FixedInt;
+    use crate::fixed::FixedInt;
 
-    use reader::FixedIntReader;
-    use writer::FixedIntWriter;
+    use crate::reader::FixedIntReader;
+    use crate::writer::FixedIntWriter;
 
     #[test]
     fn test_u32_enc() {

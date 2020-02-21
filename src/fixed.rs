@@ -7,9 +7,9 @@ pub trait FixedInt: Sized + Copy {
     /// Returns how many bytes are required to represent the given type.
     fn required_space() -> usize;
     /// Encode a value into the given slice. `dst` must be exactly `REQUIRED_SPACE` bytes.
-    fn encode_fixed(self, &mut [u8]);
+    fn encode_fixed(self, src: &mut [u8]);
     /// Decode a value from the given slice. `src` must be exactly `REQUIRED_SPACE` bytes.
-    fn decode_fixed(&[u8]) -> Self;
+    fn decode_fixed(src: &[u8]) -> Self;
     /// Perform a transmute, i.e. return a "view" into the integer's memory, which is faster than
     /// performing a copy.
     fn encode_fixed_light<'a>(&'a self) -> &'a [u8];

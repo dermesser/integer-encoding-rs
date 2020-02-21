@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use reader::VarIntReader;
-    use varint::VarInt;
-    use writer::VarIntWriter;
+    use crate::reader::VarIntReader;
+    use crate::varint::VarInt;
+    use crate::writer::VarIntWriter;
 
     #[test]
     fn test_required_space() {
