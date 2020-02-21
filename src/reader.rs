@@ -1,8 +1,11 @@
 use std::io;
 use std::io::{Read, Result};
 
-use fixed::FixedInt;
-use varint::{VarInt, MSB};
+use crate::fixed::FixedInt;
+use crate::varint::{VarInt, MSB};
+
+use futures::io::AsyncReadExt;
+use futures::prelude::*;
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
@@ -17,37 +20,77 @@ pub trait VarIntReader {
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI>;
 }
 
-impl<R: Read> VarIntReader for R {
-    fn read_varint<VI: VarInt>(&mut self) -> Result<VI> {
-        const BUFLEN: usize = 10;
-        let mut buf = [0 as u8; BUFLEN];
-        let mut i = 0;
+/// Like a VarIntReader, but returns a future.
+#[async_trait::async_trait]
+pub trait VarIntAsyncReader {
+    async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI>;
+}
 
-        loop {
-            if i >= BUFLEN {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidData,
-                    "Unterminated varint",
-                ));
-            }
+/// VarIntProcessor encapsulates the logic for decoding a VarInt byte-by-byte.
+#[derive(Default)]
+pub struct VarIntProcessor {
+    buf: [u8; 10],
+    i: usize,
+}
 
-            let read = try!(self.read(&mut buf[i..i + 1]));
+impl VarIntProcessor {
+    fn push(&mut self, b: u8) -> Result<()> {
+        if self.i >= 10 {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Unterminated varint",
+            ));
+        }
+        self.buf[self.i] = b;
+        self.i += 1;
+        Ok(())
+    }
+    fn finished(&self) -> bool {
+        (self.i > 0 && (self.buf[self.i - 1] & MSB == 0))
+    }
+    fn decode<VI: VarInt>(&self) -> VI {
+        VI::decode_var(&self.buf[0..self.i]).0
+    }
+}
+
+#[async_trait::async_trait]
+impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
+    async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI> {
+        let mut buf = [0 as u8; 1];
+        let mut p = VarIntProcessor::default();
+
+        while !p.finished() {
+            let read = self.read(&mut buf).await?;
 
             // EOF
-            if read == 0 && i == 0 {
+            if read == 0 && p.i == 0 {
                 return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
             }
 
-            if buf[i] & MSB == 0 {
-                break;
-            }
-
-            i += 1;
+            p.push(buf[0])?;
         }
 
-        let (result, _) = VI::decode_var(&buf[0..i + 1]);
+        Ok(p.decode())
+    }
+}
 
-        Ok(result)
+impl<R: Read> VarIntReader for R {
+    fn read_varint<VI: VarInt>(&mut self) -> Result<VI> {
+        let mut buf = [0 as u8; 1];
+        let mut p = VarIntProcessor::default();
+
+        while !p.finished() {
+            let read = self.read(&mut buf)?;
+
+            // EOF
+            if read == 0 && p.i == 0 {
+                return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
+            }
+
+            p.push(buf[0])?;
+        }
+
+        Ok(p.decode())
     }
 }
 
@@ -63,7 +106,7 @@ impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
 
-        let read = try!(self.read(&mut buf[0..FI::required_space()]));
+        let read = self.read(&mut buf[0..FI::required_space()])?;
 
         if read == 0 {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));

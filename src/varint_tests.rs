@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::reader::VarIntReader;
+    use crate::reader::{VarIntAsyncReader, VarIntReader};
     use crate::varint::VarInt;
     use crate::writer::VarIntWriter;
 
@@ -104,5 +104,40 @@ mod tests {
         assert_eq!(i5, reader.read_varint().unwrap());
 
         assert!(reader.read_varint::<u32>().is_err());
+    }
+
+    #[test]
+    fn test_async_reader() {
+        let mut buf = Vec::with_capacity(128);
+
+        let i1: u32 = 1;
+        let i2: u32 = 65532;
+        let i3: u32 = 4200123456;
+        let i4: i64 = i3 as i64 * 1000;
+        let i5: i32 = -32456;
+
+        assert!(buf.write_varint(i1).is_ok());
+        assert!(buf.write_varint(i2).is_ok());
+        assert!(buf.write_varint(i3).is_ok());
+        assert!(buf.write_varint(i4).is_ok());
+        assert!(buf.write_varint(i5).is_ok());
+
+        let mut reader: &[u8] = buf.as_ref();
+
+        futures::executor::block_on(async {
+            assert_eq!(i1, reader.read_varint_async().await.unwrap());
+            assert_eq!(i2, reader.read_varint_async().await.unwrap());
+            assert_eq!(i3, reader.read_varint_async().await.unwrap());
+            assert_eq!(i4, reader.read_varint_async().await.unwrap());
+            assert_eq!(i5, reader.read_varint_async().await.unwrap());
+            assert!(reader.read_varint_async::<u32>().await.is_err());
+        });
+    }
+
+    #[test]
+    fn test_unterminated_varint() {
+        let mut buf = vec![0xff as u8; 12];
+        let mut read = buf.as_slice();
+        assert!(read.read_varint::<u64>().is_err());
     }
 }
