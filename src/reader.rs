@@ -111,16 +111,31 @@ pub trait FixedIntReader {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI>;
 }
 
-impl<R: Read> FixedIntReader for R {
-    fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
+/// Like FixedIntReader, but returns a future.
+#[async_trait::async_trait]
+pub trait FixedIntAsyncReader {
+    async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI>;
+}
+
+#[async_trait::async_trait]
+impl<AR: AsyncRead + Unpin + Send> FixedIntAsyncReader for AR {
+    async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
-
-        let read = self.read(&mut buf[0..FI::required_space()])?;
-
+        let read = self.read(&mut buf[0..FI::required_space()]).await?;
         if read == 0 {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
         }
+        Ok(FI::decode_fixed(&buf[0..read]))
+    }
+}
 
+impl<R: Read> FixedIntReader for R {
+    fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
+        let mut buf = [0 as u8; 8];
+        let read = self.read(&mut buf[0..FI::required_space()])?;
+        if read == 0 {
+            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
+        }
         Ok(FI::decode_fixed(&buf[0..read]))
     }
 }

@@ -28,7 +28,9 @@ pub use fixed::FixedInt;
 pub use varint::VarInt;
 
 pub use reader::FixedIntReader;
-pub use reader::VarIntAsyncReader;
+pub use reader::FixedIntAsyncReader;
 pub use reader::VarIntReader;
+pub use reader::VarIntAsyncReader;
+
 pub use writer::FixedIntWriter;
 pub use writer::VarIntWriter;
