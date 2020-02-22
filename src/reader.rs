@@ -5,10 +5,10 @@ use crate::fixed::FixedInt;
 use crate::varint::{VarInt, MSB};
 
 #[cfg(not(feature = "use_futures_types"))]
-use tokio::{prelude::*, io::AsyncReadExt};
+use tokio::{io::AsyncReadExt, prelude::*};
 
 #[cfg(feature = "use_futures_types")]
-use futures::{prelude::*, io::AsyncReadExt};
+use futures::{io::AsyncReadExt, prelude::*};
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
@@ -52,7 +52,7 @@ impl VarIntProcessor {
         (self.i > 0 && (self.buf[self.i - 1] & MSB == 0))
     }
     fn decode<VI: VarInt>(&self) -> VI {
-        VI::decode_var(&self.buf[0..self.i+1]).0
+        VI::decode_var(&self.buf[0..=self.i]).0
     }
 }
 

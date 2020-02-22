@@ -48,12 +48,12 @@ macro_rules! impl_fixedint {
 
             fn encode_fixed(self, dst: &mut [u8]) {
                 assert_eq!(dst.len(), Self::REQUIRED_SPACE);
-                let encoded = unsafe { transmute::<&$t, &[u8; $sz]>(&self) };
+                let encoded = unsafe { &*(&self as *const $t as *const [u8; $sz]) };
                 dst.clone_from_slice(encoded);
             }
             fn decode_fixed(src: &[u8]) -> $t {
                 assert_eq!(src.len(), Self::REQUIRED_SPACE);
-                return unsafe { *transmute::<*const u8, &$t>(src.as_ptr()) };
+                return unsafe { *(src.as_ptr() as *const $t) }
             }
         }
     };

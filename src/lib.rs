@@ -27,12 +27,12 @@ mod writer;
 pub use fixed::FixedInt;
 pub use varint::VarInt;
 
-pub use reader::FixedIntReader;
 pub use reader::FixedIntAsyncReader;
-pub use reader::VarIntReader;
+pub use reader::FixedIntReader;
 pub use reader::VarIntAsyncReader;
+pub use reader::VarIntReader;
 
-pub use writer::FixedIntWriter;
 pub use writer::FixedIntAsyncWriter;
-pub use writer::VarIntWriter;
+pub use writer::FixedIntWriter;
 pub use writer::VarIntAsyncWriter;
+pub use writer::VarIntWriter;

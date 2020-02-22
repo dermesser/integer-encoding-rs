@@ -4,10 +4,10 @@ use crate::fixed::FixedInt;
 use crate::varint::VarInt;
 
 #[cfg(not(feature = "use_futures_types"))]
-use tokio::{prelude::*, io::AsyncWriteExt};
+use tokio::{io::AsyncWriteExt, prelude::*};
 
 #[cfg(feature = "use_futures_types")]
-use futures::{prelude::*, io::AsyncWriteExt};
+use futures::{io::AsyncWriteExt, prelude::*};
 
 /// A trait for writing integers in VarInt encoding to any `Write` type. This packs encoding and
 /// writing into one step.
