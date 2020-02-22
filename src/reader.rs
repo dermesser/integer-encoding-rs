@@ -1,8 +1,8 @@
 use std::io;
 use std::io::{Read, Result};
 
-use fixed::FixedInt;
-use varint::{VarInt, MSB};
+use crate::fixed::FixedInt;
+use crate::varint::{VarInt, MSB};
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
@@ -31,7 +31,7 @@ impl<R: Read> VarIntReader for R {
                 ));
             }
 
-            let read = try!(self.read(&mut buf[i..i + 1]));
+            let read = self.read(&mut buf[i..i + 1])?;
 
             // EOF
             if read == 0 && i == 0 {
@@ -63,7 +63,7 @@ impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
 
-        let read = try!(self.read(&mut buf[0..FI::required_space()]));
+        let read = self.read(&mut buf[0..FI::required_space()])?;
 
         if read == 0 {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
