@@ -23,17 +23,17 @@ mod tests {
     #[test]
     fn test_identity_u64() {
         for i in 1 as u64..100 {
-            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i, 1));
+            assert_eq!(u64::decode_var(i.encode_var_vec().as_slice()), (i, 1));
         }
         for i in 16400 as u64..16500 {
-            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i, 3));
+            assert_eq!(u64::decode_var(&i.encode_var_vec().as_slice()), (i, 3));
         }
     }
 
     #[test]
     fn test_decode_max_u64() {
         let max_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
-        assert_eq!(u64::decode_var_vec(&max_vec_encoded).0, u64::max_value());
+        assert_eq!(u64::decode_var(max_vec_encoded.as_slice()).0, u64::max_value());
     }
 
     #[test]
@@ -61,13 +61,13 @@ mod tests {
     #[test]
     fn test_decode_min_i64() {
         let min_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
-        assert_eq!(i64::decode_var_vec(&min_vec_encoded).0, i64::min_value());
+        assert_eq!(i64::decode_var(min_vec_encoded.as_slice()).0, i64::min_value());
     }
 
     #[test]
     fn test_decode_max_i64() {
         let max_vec_encoded = vec![0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
-        assert_eq!(i64::decode_var_vec(&max_vec_encoded).0, i64::max_value());
+        assert_eq!(i64::decode_var(max_vec_encoded.as_slice()).0, i64::max_value());
     }
 
     #[test]
