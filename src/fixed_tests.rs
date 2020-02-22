@@ -2,8 +2,8 @@
 mod tests {
     use crate::fixed::FixedInt;
 
-    use crate::reader::FixedIntReader;
-    use crate::writer::FixedIntWriter;
+    use crate::reader::{FixedIntAsyncReader, FixedIntReader};
+    use crate::writer::{FixedIntAsyncWriter, FixedIntWriter};
 
     #[test]
     fn test_u32_enc() {
@@ -103,5 +103,31 @@ mod tests {
     fn test_invalid_encode_size() {
         let mut buf = [0 as u8; 4];
         (11 as u64).encode_fixed(&mut buf);
+    }
+
+    #[tokio::test]
+    async fn test_async_reader() {
+        let mut buf = Vec::with_capacity(128);
+
+        let i1: u32 = 1;
+        let i2: u32 = 65532;
+        let i3: u32 = 4200123456;
+        let i4: i64 = i3 as i64 * 1000;
+        let i5: i32 = -32456;
+
+        buf.write_fixedint_async(i1).await.unwrap();
+        buf.write_fixedint_async(i2).await.unwrap();
+        buf.write_fixedint_async(i3).await.unwrap();
+        buf.write_fixedint_async(i4).await.unwrap();
+        buf.write_fixedint_async(i5).await.unwrap();
+
+        let mut reader: &[u8] = buf.as_ref();
+
+        assert_eq!(i1, reader.read_fixedint_async().await.unwrap());
+        assert_eq!(i2, reader.read_fixedint_async().await.unwrap());
+        assert_eq!(i3, reader.read_fixedint_async().await.unwrap());
+        assert_eq!(i4, reader.read_fixedint_async().await.unwrap());
+        assert_eq!(i5, reader.read_fixedint_async().await.unwrap());
+        assert!(reader.read_fixedint_async::<u32>().await.is_err());
     }
 }
