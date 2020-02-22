@@ -17,7 +17,8 @@ fn write_test_file() -> io::Result<()> {
 }
 
 async fn read_and_verify() -> io::Result<()> {
-    let mut f = tokio::fs::File::open("/tmp/varintbytes").await?;
+    let f = tokio::fs::File::open("/tmp/varintbytes").await?;
+    let mut f = tokio::io::BufReader::new(f);
     let i1: u32 = f.read_varint_async().await?;
     let i2: u32 = f.read_varint_async().await?;
     let i3: u32 = f.read_varint_async().await?;
