@@ -140,4 +140,11 @@ mod tests {
         let mut read = buf.as_slice();
         assert!(read.read_varint::<u64>().is_err());
     }
+
+    #[test]
+    fn test_unterminated_varint_2() {
+        let buf = [0xff, 0xff];
+        let mut read = &buf[..];
+        assert_eq!(16383, read.read_varint::<u64>().unwrap());
+    }
 }

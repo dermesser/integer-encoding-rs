@@ -66,10 +66,11 @@ impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
             if read == 0 && p.i == 0 {
                 return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
             }
-
-            if read != 0 {
-                p.push(buf[0])?;
+            if read == 0 {
+                break;
             }
+
+            p.push(buf[0])?;
         }
 
         Ok(p.decode())
@@ -88,10 +89,11 @@ impl<R: Read> VarIntReader for R {
             if read == 0 && p.i == 0 {
                 return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
             }
-
-            if read != 0 {
-                p.push(buf[0])?;
+            if read == 0 {
+                break;
             }
+
+            p.push(buf[0])?;
         }
 
         Ok(p.decode())
