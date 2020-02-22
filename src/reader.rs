@@ -49,7 +49,7 @@ impl VarIntProcessor {
         (self.i > 0 && (self.buf[self.i - 1] & MSB == 0))
     }
     fn decode<VI: VarInt>(&self) -> VI {
-        VI::decode_var(&self.buf[0..self.i]).0
+        VI::decode_var(&self.buf[0..self.i+1]).0
     }
 }
 
@@ -67,7 +67,9 @@ impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
                 return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
             }
 
-            p.push(buf[0])?;
+            if read != 0 {
+                p.push(buf[0])?;
+            }
         }
 
         Ok(p.decode())
@@ -87,7 +89,9 @@ impl<R: Read> VarIntReader for R {
                 return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
             }
 
-            p.push(buf[0])?;
+            if read != 0 {
+                p.push(buf[0])?;
+            }
         }
 
         Ok(p.decode())
