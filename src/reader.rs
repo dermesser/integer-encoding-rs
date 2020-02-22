@@ -63,12 +63,7 @@ impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
 
-        let read = self.read(&mut buf[0..FI::required_space()])?;
-
-        if read == 0 {
-            return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"));
-        }
-
-        Ok(FI::decode_fixed(&buf[0..read]))
+        self.read_exact(&mut buf[0..FI::required_space()])?;
+        Ok(FI::decode_fixed(&buf[0..FI::required_space()]))
     }
 }
