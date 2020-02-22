@@ -4,8 +4,8 @@ use std::io::{Read, Result};
 use crate::fixed::FixedInt;
 use crate::varint::{VarInt, MSB};
 
-use futures::io::AsyncReadExt;
-use futures::prelude::*;
+use tokio::io::AsyncReadExt;
+use tokio::prelude::*;
 
 /// A trait for reading VarInts from any other `Reader`.
 ///

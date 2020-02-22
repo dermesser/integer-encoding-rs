@@ -124,7 +124,7 @@ mod tests {
 
         let mut reader: &[u8] = buf.as_ref();
 
-        futures::executor::block_on(async {
+        tokio::runtime::Runtime::new().unwrap().block_on(async {
             assert_eq!(i1, reader.read_varint_async().await.unwrap());
             assert_eq!(i2, reader.read_varint_async().await.unwrap());
             assert_eq!(i3, reader.read_varint_async().await.unwrap());
@@ -136,7 +136,7 @@ mod tests {
 
     #[test]
     fn test_unterminated_varint() {
-        let mut buf = vec![0xff as u8; 12];
+        let buf = vec![0xff as u8; 12];
         let mut read = buf.as_slice();
         assert!(read.read_varint::<u64>().is_err());
     }
