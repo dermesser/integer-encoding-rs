@@ -33,4 +33,6 @@ pub use reader::VarIntReader;
 pub use reader::VarIntAsyncReader;
 
 pub use writer::FixedIntWriter;
+pub use writer::FixedIntAsyncWriter;
 pub use writer::VarIntWriter;
+pub use writer::VarIntAsyncWriter;

@@ -2,7 +2,7 @@
 mod tests {
     use crate::reader::{VarIntAsyncReader, VarIntReader};
     use crate::varint::VarInt;
-    use crate::writer::VarIntWriter;
+    use crate::writer::{VarIntAsyncWriter, VarIntWriter};
 
     #[test]
     fn test_required_space() {
@@ -106,8 +106,8 @@ mod tests {
         assert!(reader.read_varint::<u32>().is_err());
     }
 
-    #[test]
-    fn test_async_reader() {
+    #[tokio::test]
+    async fn test_async_reader() {
         let mut buf = Vec::with_capacity(128);
 
         let i1: u32 = 1;
@@ -116,22 +116,20 @@ mod tests {
         let i4: i64 = i3 as i64 * 1000;
         let i5: i32 = -32456;
 
-        assert!(buf.write_varint(i1).is_ok());
-        assert!(buf.write_varint(i2).is_ok());
-        assert!(buf.write_varint(i3).is_ok());
-        assert!(buf.write_varint(i4).is_ok());
-        assert!(buf.write_varint(i5).is_ok());
+        buf.write_varint_async(i1).await.unwrap();
+        buf.write_varint_async(i2).await.unwrap();
+        buf.write_varint_async(i3).await.unwrap();
+        buf.write_varint_async(i4).await.unwrap();
+        buf.write_varint_async(i5).await.unwrap();
 
         let mut reader: &[u8] = buf.as_ref();
 
-        tokio::runtime::Runtime::new().unwrap().block_on(async {
-            assert_eq!(i1, reader.read_varint_async().await.unwrap());
-            assert_eq!(i2, reader.read_varint_async().await.unwrap());
-            assert_eq!(i3, reader.read_varint_async().await.unwrap());
-            assert_eq!(i4, reader.read_varint_async().await.unwrap());
-            assert_eq!(i5, reader.read_varint_async().await.unwrap());
-            assert!(reader.read_varint_async::<u32>().await.is_err());
-        });
+        assert_eq!(i1, reader.read_varint_async().await.unwrap());
+        assert_eq!(i2, reader.read_varint_async().await.unwrap());
+        assert_eq!(i3, reader.read_varint_async().await.unwrap());
+        assert_eq!(i4, reader.read_varint_async().await.unwrap());
+        assert_eq!(i5, reader.read_varint_async().await.unwrap());
+        assert!(reader.read_varint_async::<u32>().await.is_err());
     }
 
     #[test]

@@ -12,7 +12,7 @@ edition = "2018"
 
 [dependencies]
 async-trait = "0.1"
-tokio = { version = "0.2", features = ["fs", "rt-core"] }
+tokio = { version = "0.2", features = ["fs", "rt-threaded", "macros"] }
 futures = { version = "0.3", optional = true }
 
 [workspace]
