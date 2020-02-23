@@ -1,4 +1,5 @@
 language: rust
+dist: bionic
 
 # Test on the latest versions of all channels.
 rust:
@@ -6,6 +7,8 @@ rust:
   - beta
   - nightly
 
+script:
+    - cargo test --features tokio_async --verbose
 # Run this build on the "container-based infrastructure"
 # See http://docs.travis-ci.com/user/workers/container-based-infrastructure/.
 sudo: false
