@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use crate::reader::VarIntReader;
+    use crate::reader::{VarIntAsyncReader, VarIntReader};
     use crate::varint::VarInt;
-    use crate::writer::VarIntWriter;
+    use crate::writer::{VarIntAsyncWriter, VarIntWriter};
 
     #[test]
     fn test_required_space() {
@@ -23,17 +23,20 @@ mod tests {
     #[test]
     fn test_identity_u64() {
         for i in 1 as u64..100 {
-            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i, 1));
+            assert_eq!(u64::decode_var(i.encode_var_vec().as_slice()), (i, 1));
         }
         for i in 16400 as u64..16500 {
-            assert_eq!(u64::decode_var_vec(&i.encode_var_vec()), (i, 3));
+            assert_eq!(u64::decode_var(&i.encode_var_vec().as_slice()), (i, 3));
         }
     }
 
     #[test]
     fn test_decode_max_u64() {
         let max_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
-        assert_eq!(u64::decode_var_vec(&max_vec_encoded).0, u64::max_value());
+        assert_eq!(
+            u64::decode_var(max_vec_encoded.as_slice()).0,
+            u64::max_value()
+        );
     }
 
     #[test]
@@ -61,13 +64,19 @@ mod tests {
     #[test]
     fn test_decode_min_i64() {
         let min_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
-        assert_eq!(i64::decode_var_vec(&min_vec_encoded).0, i64::min_value());
+        assert_eq!(
+            i64::decode_var(min_vec_encoded.as_slice()).0,
+            i64::min_value()
+        );
     }
 
     #[test]
     fn test_decode_max_i64() {
         let max_vec_encoded = vec![0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
-        assert_eq!(i64::decode_var_vec(&max_vec_encoded).0, i64::max_value());
+        assert_eq!(
+            i64::decode_var(max_vec_encoded.as_slice()).0,
+            i64::max_value()
+        );
     }
 
     #[test]
@@ -104,5 +113,45 @@ mod tests {
         assert_eq!(i5, reader.read_varint().unwrap());
 
         assert!(reader.read_varint::<u32>().is_err());
+    }
+
+    #[tokio::test]
+    async fn test_async_reader() {
+        let mut buf = Vec::with_capacity(128);
+
+        let i1: u32 = 1;
+        let i2: u32 = 65532;
+        let i3: u32 = 4200123456;
+        let i4: i64 = i3 as i64 * 1000;
+        let i5: i32 = -32456;
+
+        buf.write_varint_async(i1).await.unwrap();
+        buf.write_varint_async(i2).await.unwrap();
+        buf.write_varint_async(i3).await.unwrap();
+        buf.write_varint_async(i4).await.unwrap();
+        buf.write_varint_async(i5).await.unwrap();
+
+        let mut reader: &[u8] = buf.as_ref();
+
+        assert_eq!(i1, reader.read_varint_async().await.unwrap());
+        assert_eq!(i2, reader.read_varint_async().await.unwrap());
+        assert_eq!(i3, reader.read_varint_async().await.unwrap());
+        assert_eq!(i4, reader.read_varint_async().await.unwrap());
+        assert_eq!(i5, reader.read_varint_async().await.unwrap());
+        assert!(reader.read_varint_async::<u32>().await.is_err());
+    }
+
+    #[test]
+    fn test_unterminated_varint() {
+        let buf = vec![0xff as u8; 12];
+        let mut read = buf.as_slice();
+        assert!(read.read_varint::<u64>().is_err());
+    }
+
+    #[test]
+    fn test_unterminated_varint_2() {
+        let buf = [0xff, 0xff];
+        let mut read = &buf[..];
+        assert_eq!(16383, read.read_varint::<u64>().unwrap());
     }
 }

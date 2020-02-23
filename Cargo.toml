@@ -1,6 +1,7 @@
 [package]
 name = "integer-encoding"
-version = "1.0.8"
+version = "1.1.0"
+publish = false
 authors = ["Lewin Bormann <lbo@spheniscida.de>"]
 description = "varint+zigzag and fixedint integer encoding/decoding (https://developers.google.com/protocol-buffers/docs/encoding)"
 repository = "https://github.com/dermesser/integer-encoding-rs"
@@ -11,4 +12,18 @@ edition = "2018"
 
 [dependencies]
 async-trait = "0.1"
-futures = "0.3"
+tokio = { version = "0.2", features = ["io-util"], optional = true }
+futures-util = { version = "0.3", optional = true, features = ["io"] }
+
+[dev-dependencies]
+tokio = { version = "0.2", features = ["fs", "rt-threaded", "macros"] }
+
+[workspace]
+members = ["examples/read-write-file"]
+
+[features]
+default = ["tokio"]
+# Enable this feature if you want to use the AsyncRead/AsyncWrite traits from
+# the futures crate instead of those from tokio. Set default-features=false
+# in your Cargo.toml to avoid having to compile tokio.
+use_futures_types = ["futures-util"]

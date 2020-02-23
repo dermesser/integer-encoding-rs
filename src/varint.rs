@@ -35,10 +35,6 @@ pub trait VarInt: Sized + Copy {
     /// The number of bytes taken by the encoded integer is returned.
     fn encode_var(self, src: &mut [u8]) -> usize;
 
-    /// Helper: (bit useless) - Decode value from the Vec.
-    fn decode_var_vec(v: &Vec<u8>) -> (Self, usize) {
-        Self::decode_var(&v)
-    }
     /// Helper: Encode a value and return the encoded form as Vec. The Vec must be at least
     /// `required_space()` bytes long.
     fn encode_var_vec(self) -> Vec<u8> {
@@ -143,7 +139,7 @@ impl VarInt for u64 {
                 n >>= 7;
             }
 
-            dst[i - 1] = DROP_MSB & dst[i - 1];
+            dst[i - 1] &= DROP_MSB;
             i
         } else {
             dst[0] = 0;
@@ -186,7 +182,7 @@ impl VarInt for i64 {
                 n >>= 7;
             }
 
-            dst[i - 1] = DROP_MSB & dst[i - 1];
+            dst[i - 1] &= DROP_MSB;
             i
         } else {
             dst[0] = 0;
