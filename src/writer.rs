@@ -3,10 +3,10 @@ use std::io::{Result, Write};
 use crate::fixed::FixedInt;
 use crate::varint::VarInt;
 
-#[cfg(not(feature = "use_futures_types"))]
+#[cfg(feature = "tokio_async")]
 use tokio::{io::AsyncWriteExt, prelude::*};
 
-#[cfg(feature = "use_futures_types")]
+#[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncWriteExt, io::AsyncWrite};
 
 /// A trait for writing integers in VarInt encoding to any `Write` type. This packs encoding and
@@ -16,12 +16,14 @@ pub trait VarIntWriter {
 }
 
 /// Like VarIntWriter, but asynchronous.
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 pub trait VarIntAsyncWriter {
     /// Write a VarInt integer to an asynchronous writer.
     async fn write_varint_async<VI: VarInt + Send>(&mut self, n: VI) -> Result<usize>;
 }
 
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 impl<AW: AsyncWrite + Send + Unpin> VarIntAsyncWriter for AW {
     async fn write_varint_async<VI: VarInt + Send>(&mut self, n: VI) -> Result<usize> {
@@ -45,11 +47,13 @@ pub trait FixedIntWriter {
     fn write_fixedint<FI: FixedInt>(&mut self, n: FI) -> Result<usize>;
 }
 
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 pub trait FixedIntAsyncWriter {
     async fn write_fixedint_async<FI: FixedInt + Send>(&mut self, n: FI) -> Result<usize>;
 }
 
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 impl<AW: AsyncWrite + Unpin + Send> FixedIntAsyncWriter for AW {
     async fn write_fixedint_async<FI: FixedInt + Send>(&mut self, n: FI) -> Result<usize> {

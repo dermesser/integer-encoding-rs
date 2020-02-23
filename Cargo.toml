@@ -22,8 +22,7 @@ tokio = { version = "0.2", features = ["fs", "rt-threaded", "macros"] }
 members = ["examples/read-write-file"]
 
 [features]
-default = ["tokio"]
-# Enable this feature if you want to use the AsyncRead/AsyncWrite traits from
-# the futures crate instead of those from tokio. Set default-features=false
-# in your Cargo.toml to avoid having to compile tokio.
-use_futures_types = ["futures-util"]
+# Enable one of these features if you want to use the AsyncRead/AsyncWrite traits from
+# the futures crate instead of those from tokio.
+tokio_async = ["tokio"]
+futures_async = ["futures-util"]

@@ -4,10 +4,10 @@ use std::io::{Read, Result};
 use crate::fixed::FixedInt;
 use crate::varint::{VarInt, MSB};
 
-#[cfg(not(feature = "use_futures_types"))]
+#[cfg(feature = "tokio_async")]
 use tokio::{io::AsyncReadExt, prelude::*};
 
-#[cfg(feature = "use_futures_types")]
+#[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncReadExt, io::AsyncRead};
 
 /// A trait for reading VarInts from any other `Reader`.
@@ -23,6 +23,7 @@ pub trait VarIntReader {
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI>;
 }
 
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 /// Like a VarIntReader, but returns a future.
 #[async_trait::async_trait]
 pub trait VarIntAsyncReader {
@@ -56,6 +57,7 @@ impl VarIntProcessor {
     }
 }
 
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI> {
@@ -112,11 +114,13 @@ pub trait FixedIntReader {
 }
 
 /// Like FixedIntReader, but returns a future.
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 pub trait FixedIntAsyncReader {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI>;
 }
 
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 impl<AR: AsyncRead + Unpin + Send> FixedIntAsyncReader for AR {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
