@@ -8,7 +8,7 @@ use crate::varint::{VarInt, MSB};
 use tokio::{io::AsyncReadExt, prelude::*};
 
 #[cfg(feature = "use_futures_types")]
-use futures::{io::AsyncReadExt, prelude::*};
+use futures_util::{io::AsyncReadExt, io::AsyncRead};
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
