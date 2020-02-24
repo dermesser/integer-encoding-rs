@@ -25,3 +25,8 @@ members = ["examples/read-write-file"]
 # the futures crate instead of those from tokio.
 tokio_async = ["tokio"]
 futures_async = ["futures-util"]
+
+[package.metadata.docs.rs]
+
+features = ["tokio_async"]
+
