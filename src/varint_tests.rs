@@ -1,8 +1,13 @@
 #[cfg(test)]
 mod tests {
-    use crate::reader::{VarIntAsyncReader, VarIntReader};
+    #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
+    use crate::reader::VarIntAsyncReader;
+    #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
+    use crate::writer::VarIntAsyncWriter;
+
+    use crate::writer::VarIntWriter;
+    use crate::reader::VarIntReader;
     use crate::varint::VarInt;
-    use crate::writer::{VarIntAsyncWriter, VarIntWriter};
 
     #[test]
     fn test_required_space() {
@@ -115,6 +120,7 @@ mod tests {
         assert!(reader.read_varint::<u32>().is_err());
     }
 
+    #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
     #[tokio::test]
     async fn test_async_reader() {
         let mut buf = Vec::with_capacity(128);

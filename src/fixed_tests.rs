@@ -2,8 +2,13 @@
 mod tests {
     use crate::fixed::FixedInt;
 
-    use crate::reader::{FixedIntAsyncReader, FixedIntReader};
-    use crate::writer::{FixedIntAsyncWriter, FixedIntWriter};
+    #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
+    use crate::reader::FixedIntAsyncReader;
+    #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
+    use crate::writer::FixedIntAsyncWriter;
+
+    use crate::reader::FixedIntReader;
+    use crate::writer::FixedIntWriter;
 
     #[test]
     fn test_u32_enc() {
@@ -105,6 +110,7 @@ mod tests {
         (11 as u64).encode_fixed(&mut buf);
     }
 
+    #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
     #[tokio::test]
     async fn test_async_reader() {
         let mut buf = Vec::with_capacity(128);

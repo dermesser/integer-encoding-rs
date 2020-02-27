@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 tokio = { version = "0.2", features=["full"] }
-integer-encoding = { path = "../../", features = ["tokio_async"]}
+integer-encoding = { path = "../../", features = []}
