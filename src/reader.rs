@@ -53,7 +53,7 @@ impl VarIntProcessor {
         (self.i > 0 && (self.buf[self.i - 1] & MSB == 0))
     }
     fn decode<VI: VarInt>(&self) -> VI {
-        VI::decode_var(&self.buf[0..=self.i]).0
+        VI::decode_var(&self.buf[0..self.i]).0
     }
 }
 
