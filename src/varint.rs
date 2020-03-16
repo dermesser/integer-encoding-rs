@@ -133,14 +133,14 @@ impl VarInt for u64 {
         let mut i = 0;
 
         if n > 0 {
-            while n > 0 {
-                dst[i] = MSB | (n as u8 & EXTRACT_SEVEN) as u8;
+            while n >= 0x80 {
+                dst[i] = MSB | (n as u8);
                 i += 1;
                 n >>= 7;
             }
 
-            dst[i - 1] &= DROP_MSB;
-            i
+            dst[i] = n as u8;
+            i+1
         } else {
             dst[0] = 0;
             1
