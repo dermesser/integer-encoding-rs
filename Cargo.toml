@@ -18,7 +18,7 @@ futures-util = { version = "0.3", optional = true, features = ["io"] }
 tokio = { version = "0.2", features = ["fs", "rt-threaded", "macros"] }
 
 [workspace]
-members = ["examples/read-write-file"]
+members = ["examples/read-write-file", "examples/encode-varint-stdin"]
 
 [features]
 # Enable one of these features if you want to use the AsyncRead/AsyncWrite traits from
