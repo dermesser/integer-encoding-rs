@@ -1,5 +1,7 @@
-pub const MSB: u8 = 0b10000000;
-const DROP_MSB: u8 = 0b01111111;
+
+/// Most-significant byte, == 0x80
+pub const MSB: u8 = 0b1000_0000;
+const DROP_MSB: u8 = 0b0111_1111;
 const EXTRACT_SEVEN: u8 = DROP_MSB;
 
 #[inline]
@@ -127,24 +129,21 @@ impl VarInt for u64 {
 
         (result, shift / 7 as usize)
     }
+
+    #[inline]
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
         let mut n = self;
         let mut i = 0;
 
-        if n > 0 {
-            while n >= 0x80 {
-                dst[i] = MSB | (n as u8);
-                i += 1;
-                n >>= 7;
-            }
-
-            dst[i] = n as u8;
-            i+1
-        } else {
-            dst[0] = 0;
-            1
+        while n >= 0x80 {
+            dst[i] = MSB | (n as u8);
+            i += 1;
+            n >>= 7;
         }
+
+        dst[i] = n as u8;
+        i+1
     }
 }
 
