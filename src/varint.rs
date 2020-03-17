@@ -1,6 +1,7 @@
-pub const MSB: u8 = 0b10000000;
-const DROP_MSB: u8 = 0b01111111;
-const EXTRACT_SEVEN: u8 = DROP_MSB;
+
+/// Most-significant byte, == 0x80
+pub const MSB: u8 = 0b1000_0000;
+const DROP_MSB: u8 = 0b0111_1111;
 
 #[inline]
 fn required_encoded_space_unsigned(mut v: u64) -> usize {
@@ -127,24 +128,21 @@ impl VarInt for u64 {
 
         (result, shift / 7 as usize)
     }
+
+    #[inline]
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
         let mut n = self;
         let mut i = 0;
 
-        if n > 0 {
-            while n > 0 {
-                dst[i] = MSB | (n as u8 & EXTRACT_SEVEN) as u8;
-                i += 1;
-                n >>= 7;
-            }
-
-            dst[i - 1] &= DROP_MSB;
-            i
-        } else {
-            dst[0] = 0;
-            1
+        while n >= 0x80 {
+            dst[i] = MSB | (n as u8);
+            i += 1;
+            n >>= 7;
         }
+
+        dst[i] = n as u8;
+        i+1
     }
 }
 
@@ -170,23 +168,19 @@ impl VarInt for i64 {
         (zigzag_decode(result) as Self, shift / 7 as usize)
     }
 
+    #[inline]
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
         let mut n: u64 = zigzag_encode(self as i64);
         let mut i = 0;
 
-        if n > 0 {
-            while n > 0 {
-                dst[i] = MSB | (n as u8 & EXTRACT_SEVEN) as u8;
-                i += 1;
-                n >>= 7;
-            }
-
-            dst[i - 1] &= DROP_MSB;
-            i
-        } else {
-            dst[0] = 0;
-            1
+        while n >= 0x80 {
+            dst[i] = MSB | (n as u8);
+            i += 1;
+            n >>= 7;
         }
+
+        dst[i] = n as u8;
+        i+1
     }
 }
