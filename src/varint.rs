@@ -1,4 +1,3 @@
-
 /// Most-significant byte, == 0x80
 pub const MSB: u8 = 0b1000_0000;
 const DROP_MSB: u8 = 0b0111_1111;
@@ -31,7 +30,8 @@ pub trait VarInt: Sized + Copy {
     fn required_space(self) -> usize;
     /// Decode a value from the slice. Returns the value and the number of bytes read from the
     /// slice (can be used to read several consecutive values from a big slice)
-    fn decode_var(src: &[u8]) -> (Self, usize);
+    /// return None if all bytes has MSB set.
+    fn decode_var(src: &[u8]) -> Option<(Self, usize)>;
     /// Encode a value into the slice. The slice must be at least `required_space()` bytes long.
     /// The number of bytes taken by the encoded integer is returned.
     fn encode_var(self, src: &mut [u8]) -> usize;
@@ -66,9 +66,9 @@ macro_rules! impl_varint {
                 required_encoded_space_unsigned(self as u64)
             }
 
-            fn decode_var(src: &[u8]) -> (Self, usize) {
-                let (n, s) = u64::decode_var(src);
-                (n as Self, s)
+            fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
+                let (n, s) = u64::decode_var(src)?;
+                Some((n as Self, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -82,9 +82,9 @@ macro_rules! impl_varint {
                 required_encoded_space_signed(self as i64)
             }
 
-            fn decode_var(src: &[u8]) -> (Self, usize) {
-                let (n, s) = i64::decode_var(src);
-                (n as Self, s)
+            fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
+                let (n, s) = i64::decode_var(src)?;
+                Some((n as Self, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -112,9 +112,15 @@ impl VarInt for u64 {
         required_encoded_space_unsigned(self)
     }
 
-    fn decode_var(src: &[u8]) -> (Self, usize) {
+    fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
         let mut result: u64 = 0;
         let mut shift = 0;
+
+        if let Some(b) = src.last() {
+            if b & MSB != 0 {
+                return None;
+            }
+        }
 
         for b in src.iter() {
             let msb_dropped = b & DROP_MSB;
@@ -126,7 +132,7 @@ impl VarInt for u64 {
             }
         }
 
-        (result, shift / 7 as usize)
+        Some((result, shift / 7 as usize))
     }
 
     #[inline]
@@ -142,7 +148,7 @@ impl VarInt for u64 {
         }
 
         dst[i] = n as u8;
-        i+1
+        i + 1
     }
 }
 
@@ -151,9 +157,15 @@ impl VarInt for i64 {
         required_encoded_space_signed(self)
     }
 
-    fn decode_var(src: &[u8]) -> (Self, usize) {
+    fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
         let mut result: u64 = 0;
         let mut shift = 0;
+
+        if let Some(b) = src.last() {
+            if b & MSB != 0 {
+                return None;
+            }
+        }
 
         for b in src.iter() {
             let msb_dropped = b & DROP_MSB;
@@ -165,7 +177,7 @@ impl VarInt for i64 {
             }
         }
 
-        (zigzag_decode(result) as Self, shift / 7 as usize)
+        Some((zigzag_decode(result) as Self, shift / 7 as usize))
     }
 
     #[inline]
@@ -181,6 +193,6 @@ impl VarInt for i64 {
         }
 
         dst[i] = n as u8;
-        i+1
+        i + 1
     }
 }
