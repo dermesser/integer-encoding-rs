@@ -8,7 +8,7 @@ use crate::varint::{VarInt, MSB};
 use tokio::{io::AsyncReadExt, prelude::*};
 
 #[cfg(feature = "futures_async")]
-use futures_util::{io::AsyncReadExt, io::AsyncRead};
+use futures_util::{io::AsyncRead, io::AsyncReadExt};
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
@@ -78,7 +78,8 @@ impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
             p.push(buf[0])?;
         }
 
-        Ok(p.decode())
+        p.decode()
+            .ok_or_else(|| io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"))
     }
 }
 
@@ -101,7 +102,8 @@ impl<R: Read> VarIntReader for R {
             p.push(buf[0])?;
         }
 
-        p.decode().ok_or_else(|| io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"))
+        p.decode()
+            .ok_or_else(|| io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"))
     }
 }
 
