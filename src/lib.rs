@@ -11,7 +11,7 @@
 //!
 //!     let b: i32 = -111;
 //!     let encoded_byte_vec = b.encode_var_vec();
-//!     assert_eq!((b, 2), i32::decode_var(&encoded_byte_vec));
+//!     assert_eq!(Some((b, 2)), i32::decode_var(&encoded_byte_vec));
 //! }
 //! ```
 
@@ -29,14 +29,14 @@ pub use varint::VarInt;
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 pub use reader::FixedIntAsyncReader;
+pub use reader::FixedIntReader;
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 pub use reader::VarIntAsyncReader;
-pub use reader::FixedIntReader;
 pub use reader::VarIntReader;
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 pub use writer::FixedIntAsyncWriter;
+pub use writer::FixedIntWriter;
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 pub use writer::VarIntAsyncWriter;
-pub use writer::FixedIntWriter;
 pub use writer::VarIntWriter;

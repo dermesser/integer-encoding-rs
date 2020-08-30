@@ -50,10 +50,10 @@ impl VarIntProcessor {
         Ok(())
     }
     fn finished(&self) -> bool {
-        (self.i > 0 && (self.buf[self.i - 1] & MSB == 0))
+        self.i > 0 && (self.buf[self.i - 1] & MSB == 0)
     }
-    fn decode<VI: VarInt>(&self) -> VI {
-        VI::decode_var(&self.buf[0..self.i]).0
+    fn decode<VI: VarInt>(&self) -> Option<VI> {
+        Some(VI::decode_var(&self.buf[0..self.i])?.0)
     }
 }
 
@@ -101,7 +101,7 @@ impl<R: Read> VarIntReader for R {
             p.push(buf[0])?;
         }
 
-        Ok(p.decode())
+        p.decode().ok_or_else(|| io::Error::new(io::ErrorKind::UnexpectedEof, "Reached EOF"))
     }
 }
 
