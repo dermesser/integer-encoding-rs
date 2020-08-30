@@ -7,7 +7,7 @@ use crate::varint::VarInt;
 use tokio::{io::AsyncWriteExt, prelude::*};
 
 #[cfg(feature = "futures_async")]
-use futures_util::{io::AsyncWriteExt, io::AsyncWrite};
+use futures_util::{io::AsyncWrite, io::AsyncWriteExt};
 
 /// A trait for writing integers in VarInt encoding to any `Write` type. This packs encoding and
 /// writing into one step.

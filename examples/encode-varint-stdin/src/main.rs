@@ -21,8 +21,16 @@ fn main() {
         }
         let l = l.unwrap();
         match i64::from_str(&l) {
-            Ok(i) => println!("fixed: {:b} encoded (unsigned): {} encoded (signed): {}",
-            i, if i >= 0 { binencode(&(i as u64).encode_var_vec()) } else { "-".to_string() }, binencode(&i.encode_var_vec())),
+            Ok(i) => println!(
+                "fixed: {:b} encoded (unsigned): {} encoded (signed): {}",
+                i,
+                if i >= 0 {
+                    binencode(&(i as u64).encode_var_vec())
+                } else {
+                    "-".to_string()
+                },
+                binencode(&i.encode_var_vec())
+            ),
             Err(e) => println!("{:?}", e),
         }
     }
