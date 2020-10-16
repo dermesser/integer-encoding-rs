@@ -9,6 +9,8 @@ rust:
 
 script:
     - cargo test --features tokio_async --verbose
+    - cargo test --features futures_async --verbose
+    - cargo test --verbose
 # Run this build on the "container-based infrastructure"
 # See http://docs.travis-ci.com/user/workers/container-based-infrastructure/.
 sudo: false
