@@ -1,12 +1,15 @@
 language: rust
-dist: bionic
+
+os:
+    - linux
+    - osx
+    - windows
+dist: focal
+rust:
+    - stable
+    - nightly
 
 # Test on the latest versions of all channels.
-rust:
-  - stable
-  - beta
-  - nightly
-
 script:
     - cargo test --features tokio_async --verbose
     - cargo test --features futures_async --verbose
