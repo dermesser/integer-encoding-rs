@@ -1,5 +1,11 @@
+jobs:
+    include:
+        - os: linux
+          dist: focal
+        - os: osx
+        - os: windows
+
 language: rust
-dist: bionic
 
 # Test on the latest versions of all channels.
 rust:
