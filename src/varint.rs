@@ -116,23 +116,23 @@ impl VarInt for u64 {
         let mut result: u64 = 0;
         let mut shift = 0;
 
-        if let Some(b) = src.last() {
-            if b & MSB != 0 {
-                return None;
-            }
-        }
-
+        let mut success = false;
         for b in src.iter() {
             let msb_dropped = b & DROP_MSB;
             result |= (msb_dropped as u64) << shift;
             shift += 7;
 
-            if b & MSB == 0 || shift > (10 * 7) {
+            if b & MSB == 0 || shift > (9 * 7) {
+                success = b & MSB == 0;
                 break;
             }
         }
 
-        Some((result, shift / 7 as usize))
+        if success {
+            Some((result, shift / 7 as usize))
+        } else {
+            None
+        }
     }
 
     #[inline]
@@ -161,23 +161,23 @@ impl VarInt for i64 {
         let mut result: u64 = 0;
         let mut shift = 0;
 
-        if let Some(b) = src.last() {
-            if b & MSB != 0 {
-                return None;
-            }
-        }
-
+        let mut success = false;
         for b in src.iter() {
             let msb_dropped = b & DROP_MSB;
             result |= (msb_dropped as u64) << shift;
             shift += 7;
 
-            if b & MSB == 0 || shift > (10 * 7) {
+            if b & MSB == 0 || shift > (9 * 7) {
+                success = b & MSB == 0;
                 break;
             }
         }
 
-        Some((zigzag_decode(result) as Self, shift / 7 as usize))
+        if success {
+            Some((zigzag_decode(result) as Self, shift / 7 as usize))
+        } else {
+            None
+        }
     }
 
     #[inline]

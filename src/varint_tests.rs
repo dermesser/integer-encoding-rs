@@ -166,4 +166,38 @@ mod tests {
         let mut read = &buf[..];
         assert!(read.read_varint::<u64>().is_err());
     }
+
+    #[test]
+    fn test_decode_extra_bytes_u64() {
+        let mut encoded = 0x12345u64.encode_var_vec();
+        assert_eq!(u64::decode_var(&encoded[..]), Some((0x12345, 3)));
+
+        encoded.push(0x99);
+        assert_eq!(u64::decode_var(&encoded[..]), Some((0x12345, 3)));
+
+        let encoded = [0xFF, 0xFF, 0xFF];
+        assert_eq!(u64::decode_var(&encoded[..]), None);
+
+        // Overflow
+        let mut encoded = vec![0xFF; 64];
+        encoded.push(0x00);
+        assert_eq!(u64::decode_var(&encoded[..]), None);
+    }
+
+    #[test]
+    fn test_decode_extra_bytes_i64() {
+        let mut encoded = (-0x12345i64).encode_var_vec();
+        assert_eq!(i64::decode_var(&encoded[..]), Some((-0x12345, 3)));
+
+        encoded.push(0x99);
+        assert_eq!(i64::decode_var(&encoded[..]), Some((-0x12345, 3)));
+
+        let encoded = [0xFF, 0xFF, 0xFF];
+        assert_eq!(i64::decode_var(&encoded[..]), None);
+
+        // Overflow
+        let mut encoded = vec![0xFF; 64];
+        encoded.push(0x00);
+        assert_eq!(i64::decode_var(&encoded[..]), None);
+    }
 }
