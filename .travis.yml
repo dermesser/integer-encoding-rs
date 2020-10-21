@@ -1,18 +1,25 @@
+language: rust
+
 jobs:
     include:
         - os: linux
           dist: focal
+          rust:
+            - stable
+            - beta
+            - nightly
         - os: osx
+          rust:
+            - stable
+            - beta
+            - nightly
         - os: windows
-
-language: rust
+          rust:
+            - stable
+            - beta
+            - nightly
 
 # Test on the latest versions of all channels.
-rust:
-  - stable
-  - beta
-  - nightly
-
 script:
     - cargo test --features tokio_async --verbose
     - cargo test --features futures_async --verbose
