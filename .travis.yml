@@ -1,25 +1,14 @@
+language: rust
 
-jobs:
-    include:
-        - os: linux
-          language: rust
-          dist: focal
-          rust:
-            - stable
-            - beta
-            - nightly
-        - os: osx
-          language: rust
-          rust:
-            - stable
-            - beta
-            - nightly
-        - os: windows
-          language: rust
-          rust:
-            - stable
-            - beta
-            - nightly
+os:
+    - linux
+    - osx
+    - windows
+dist: focal
+rust:
+    - stable
+    - nightly
+
 # Test on the latest versions of all channels.
 script:
     - cargo test --features tokio_async --verbose
