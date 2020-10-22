@@ -10,6 +10,12 @@ representations.
 
 The format is described here: [Google's protobuf integer encoding technique](https://developers.google.com/protocol-buffers/docs/encoding).
 
+## Crate
+
+If you use Tokio v0.2 and you use the asynchronous types in this crate (feature
+`tokio_async`), you may be interested in the `v2.0` branch. It is still
+maintained with the occasional fix for edge cases and depends on Tokio v0.2.
+
 ## FixedInt
 
 `FixedInt` casts integers to bytes by either copying the underlying memory or
