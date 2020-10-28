@@ -1,5 +1,13 @@
 //! Fast serialization of integers.
 //!
+//! This crate implements encoding and decoding of integer types to and from `FixedInt` (i.e. a
+//! representation of integers similar or equal to how they are stored in memory) as well as
+//! `VarInt` (encoding integers so that they only use as much memory as needed to represent their
+//! magnitude).
+//!
+//! This is useful when (de)serializing data from and to binary representations. For example,
+//! Protocol Buffers (by Google) use these kinds of encoding.
+//!
 //! ```
 //! use integer_encoding::*;
 //!

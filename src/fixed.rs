@@ -1,6 +1,7 @@
 use std::mem::transmute;
 
-/// FixedInt provides encoding/decoding to and from fixed int representations.
+/// `FixedInt` provides encoding/decoding to and from fixed int representations.
+///
 /// The emitted bytestring contains the bytes of the integer in machine endianness.
 pub trait FixedInt: Sized + Copy {
     const REQUIRED_SPACE: usize;

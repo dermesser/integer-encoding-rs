@@ -1,7 +1,10 @@
 /// Most-significant byte, == 0x80
 pub const MSB: u8 = 0b1000_0000;
+/// All bits except for the most significant. Can be used as bitmask to drop the most-signficant
+/// bit using `&` (binary-and).
 const DROP_MSB: u8 = 0b0111_1111;
 
+/// How many bytes an integer uses when being encoded as a VarInt.
 #[inline]
 fn required_encoded_space_unsigned(mut v: u64) -> usize {
     if v == 0 {
@@ -16,6 +19,7 @@ fn required_encoded_space_unsigned(mut v: u64) -> usize {
     logcounter
 }
 
+/// How many bytes an integer uses when being encoded as a VarInt.
 #[inline]
 fn required_encoded_space_signed(v: i64) -> usize {
     required_encoded_space_unsigned(zigzag_encode(v))
@@ -23,6 +27,7 @@ fn required_encoded_space_signed(v: i64) -> usize {
 
 /// Varint (variable length integer) encoding, as described in
 /// https://developers.google.com/protocol-buffers/docs/encoding.
+///
 /// Uses zigzag encoding (also described there) for signed integer representation.
 pub trait VarInt: Sized + Copy {
     /// Returns the number of bytes this number needs in its encoded form. Note: This varies
