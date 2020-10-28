@@ -10,6 +10,13 @@ representations.
 
 The format is described here: [Google's protobuf integer encoding technique](https://developers.google.com/protocol-buffers/docs/encoding).
 
+Please feel free to use `cargo bench` to determine the rate at which your
+machine can encode and decode varints and fixedints. Note that one iteration
+comprises each eight rounds of encoding (or decoding) a signed and an unsigned
+integer each -- divide the resulting benchmark time by 16 in order to have a
+rough estimate of time per operation. The integers are very large, so the
+results represent the worst case.
+
 ## Crate
 
 If you use Tokio v0.2 and you use the asynchronous types in this crate (feature
