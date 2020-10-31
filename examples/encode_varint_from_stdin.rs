@@ -1,4 +1,4 @@
-use integer_encoding::VarInt;
+use integer_encoding::{VarInt, VarIntExt};
 
 use std::io::{self, BufRead};
 use std::str::FromStr;
