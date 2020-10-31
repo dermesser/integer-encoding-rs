@@ -175,7 +175,16 @@ impl VarInt for i64 {
     #[inline]
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
-        let n: u64 = zigzag_encode(self as i64);
-        n.encode_var(dst)
+        let mut n: u64 = zigzag_encode(self as i64);
+        let mut i = 0;
+
+        while n >= 0x80 {
+            dst[i] = MSB | (n as u8);
+            i += 1;
+            n >>= 7;
+        }
+
+        dst[i] = n as u8;
+        i + 1
     }
 }
