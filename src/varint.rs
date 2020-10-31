@@ -117,6 +117,7 @@ impl VarInt for u64 {
         required_encoded_space_unsigned(self)
     }
 
+    #[inline]
     fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
         let mut result: u64 = 0;
         let mut shift = 0;
@@ -162,6 +163,7 @@ impl VarInt for i64 {
         required_encoded_space_signed(self)
     }
 
+    #[inline]
     fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
         if let Some((result, size)) = u64::decode_var(src) {
             Some((zigzag_decode(result) as Self, size))
