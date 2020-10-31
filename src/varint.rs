@@ -163,23 +163,8 @@ impl VarInt for i64 {
     }
 
     fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
-        let mut result: u64 = 0;
-        let mut shift = 0;
-
-        let mut success = false;
-        for b in src.iter() {
-            let msb_dropped = b & DROP_MSB;
-            result |= (msb_dropped as u64) << shift;
-            shift += 7;
-
-            if b & MSB == 0 || shift > (9 * 7) {
-                success = b & MSB == 0;
-                break;
-            }
-        }
-
-        if success {
-            Some((zigzag_decode(result) as Self, shift / 7 as usize))
+        if let Some((result, size)) = u64::decode_var(src) {
+            Some((zigzag_decode(result) as Self, size))
         } else {
             None
         }
@@ -188,16 +173,7 @@ impl VarInt for i64 {
     #[inline]
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
-        let mut n: u64 = zigzag_encode(self as i64);
-        let mut i = 0;
-
-        while n >= 0x80 {
-            dst[i] = MSB | (n as u8);
-            i += 1;
-            n >>= 7;
-        }
-
-        dst[i] = n as u8;
-        i + 1
+        let n: u64 = zigzag_encode(self as i64);
+        n.encode_var(dst)
     }
 }
