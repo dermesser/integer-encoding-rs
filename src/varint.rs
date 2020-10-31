@@ -39,8 +39,11 @@ pub trait VarInt: Sized + Copy {
     fn decode_var(src: &[u8]) -> Option<(Self, usize)>;
     /// Encode a value into the slice. The slice must be at least `required_space()` bytes long.
     /// The number of bytes taken by the encoded integer is returned.
-    fn encode_var(self, src: &mut [u8]) -> usize;
+    fn encode_var(self, dst: &mut [u8]) -> usize;
+}
 
+/// Non-core functionality
+pub trait VarIntExt: VarInt {
     /// Helper: Encode a value and return the encoded form as Vec. The Vec must be at least
     /// `required_space()` bytes long.
     fn encode_var_vec(self) -> Vec<u8> {
@@ -49,6 +52,18 @@ pub trait VarInt: Sized + Copy {
         self.encode_var(&mut v);
         v
     }
+}
+
+impl<T: VarInt> VarIntExt for T {}
+
+pub trait LiteralVarInt: VarInt {
+    /// Encode a value into a varint, without zig-zag encoding if the value is negative. In that
+    /// case, simply encode the literal value including sign bit.
+    fn encode_var_literal(self, dst: &mut [u8]) -> usize;
+    /// Decode a literally-encoded varint, i.e. without zig-zag encoding.
+    fn decode_var_literal(self, src: &[u8]) -> Option<(Self, usize)>;
+    /// Space required for encoding this integer literally.
+    fn required_space_literal(self) -> usize;
 }
 
 #[inline]

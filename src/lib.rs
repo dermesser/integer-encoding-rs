@@ -33,7 +33,7 @@ mod reader;
 mod writer;
 
 pub use fixed::FixedInt;
-pub use varint::VarInt;
+pub use varint::{VarInt, VarIntExt};
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 pub use reader::FixedIntAsyncReader;

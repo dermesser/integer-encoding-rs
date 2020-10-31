@@ -6,7 +6,7 @@ mod tests {
     use crate::writer::VarIntAsyncWriter;
 
     use crate::reader::VarIntReader;
-    use crate::varint::VarInt;
+    use crate::varint::{VarInt, VarIntExt};
     use crate::writer::VarIntWriter;
 
     #[test]
