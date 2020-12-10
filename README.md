@@ -1,7 +1,7 @@
 # integer-encoding-rs
 
 [![crates.io](https://img.shields.io/crates/v/integer-encoding.svg)](https://crates.io/crates/integer-encoding)
-[![Build Status](https://travis-ci.org/dermesser/integer-encoding-rs.svg?branch=master)](https://travis-ci.org/dermesser/integer-encoding-rs)
+[![Actions CI](https://github.com/dermesser/integer-encoding-rs/workflows/Actions%20CI/badge.svg)](https://github.com/dermesser/integer-encoding-rs/actions)
 
 [full documentation](https://docs.rs/integer-encoding/)
 
