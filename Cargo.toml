@@ -11,11 +11,11 @@ edition = "2018"
 
 [dependencies]
 async-trait = { version = "0.1", optional = true }
-tokio = { version = "0.3", features = ["io-util"], optional = true }
+tokio = { version = "1.0", features = ["io-util"], optional = true }
 futures-util = { version = "0.3", optional = true, features = ["io"] }
 
 [dev-dependencies]
-tokio = { version = "0.3", features = ["fs", "rt-multi-thread", "macros"] }
+tokio = { version = "1.0", features = ["fs", "rt-multi-thread", "macros"] }
 bencher = "~0.1"
 
 [[example]]
