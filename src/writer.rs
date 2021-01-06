@@ -4,7 +4,7 @@ use crate::fixed::FixedInt;
 use crate::varint::VarInt;
 
 #[cfg(feature = "tokio_async")]
-use tokio::{io::AsyncWriteExt, prelude::*};
+use tokio::io::{AsyncWrite, AsyncWriteExt};
 
 #[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncWrite, io::AsyncWriteExt};

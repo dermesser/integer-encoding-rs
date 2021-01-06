@@ -5,7 +5,7 @@ use crate::fixed::FixedInt;
 use crate::varint::{VarInt, MSB};
 
 #[cfg(feature = "tokio_async")]
-use tokio::{io::AsyncReadExt, prelude::*};
+use tokio::io::{AsyncReadExt, AsyncRead};
 
 #[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncRead, io::AsyncReadExt};
