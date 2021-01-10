@@ -5,7 +5,7 @@ authors = ["Lewin Bormann <lbo@spheniscida.de>"]
 description = "varint+zigzag and fixedint integer encoding/decoding (https://developers.google.com/protocol-buffers/docs/encoding)"
 repository = "https://github.com/dermesser/integer-encoding-rs"
 documentation = "https://docs.rs/integer-encoding/"
-license-file = "LICENSE"
+license = "MIT"
 keywords = ["integer", "varint", "zigzag", "protobuf", "serialize"]
 edition = "2018"
 
