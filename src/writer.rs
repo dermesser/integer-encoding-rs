@@ -29,7 +29,8 @@ impl<AW: AsyncWrite + Send + Unpin> VarIntAsyncWriter for AW {
     async fn write_varint_async<VI: VarInt + Send>(&mut self, n: VI) -> Result<usize> {
         let mut buf = [0 as u8; 10];
         let b = n.encode_var(&mut buf);
-        self.write(&buf[0..b]).await
+        self.write_all(&buf[0..b]).await?;
+        Ok(b)
     }
 }
 
@@ -38,7 +39,8 @@ impl<Inner: Write> VarIntWriter for Inner {
         let mut buf = [0 as u8; 10];
         let used = n.encode_var(&mut buf[..]);
 
-        self.write(&buf[0..used])
+        self.write_all(&buf[0..used])?;
+        Ok(used)
     }
 }
 
@@ -59,7 +61,8 @@ impl<AW: AsyncWrite + Unpin + Send> FixedIntAsyncWriter for AW {
     async fn write_fixedint_async<FI: FixedInt + Send>(&mut self, n: FI) -> Result<usize> {
         let mut buf = [0 as u8; 8];
         n.encode_fixed(&mut buf[0..FI::required_space()]);
-        self.write(&buf[0..FI::required_space()]).await
+        self.write_all(&buf[0..FI::required_space()]).await?;
+        Ok(FI::REQUIRED_SPACE)
     }
 }
 
@@ -68,6 +71,7 @@ impl<W: Write> FixedIntWriter for W {
         let mut buf = [0 as u8; 8];
         n.encode_fixed(&mut buf[0..FI::required_space()]);
 
-        self.write(&buf[0..FI::required_space()])
+        self.write_all(&buf[0..FI::required_space()])?;
+        Ok(FI::REQUIRED_SPACE)
     }
 }
