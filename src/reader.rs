@@ -66,7 +66,7 @@ impl VarIntProcessor {
 impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI> {
         let mut buf = [0 as u8; 1];
-        let mut p = VarIntProcessor::new(VI);
+        let mut p = VarIntProcessor::new::<VI>();
 
         while !p.finished() {
             let read = self.read(&mut buf).await?;
