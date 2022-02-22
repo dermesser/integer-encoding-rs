@@ -54,7 +54,7 @@ macro_rules! impl_fixedint {
             }
             fn decode_fixed(src: &[u8]) -> $t {
                 assert_eq!(src.len(), Self::REQUIRED_SPACE);
-                return unsafe { *(src.as_ptr() as *const $t) };
+                return unsafe { (src.as_ptr() as *const $t).read_unaligned() };
             }
         }
     };
