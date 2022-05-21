@@ -72,7 +72,7 @@ pub(crate) trait VarIntMaxSize {
 
 impl<VI: VarInt> VarIntMaxSize for VI {
     fn varint_max_size() -> usize {
-        (size_of::<VI>()*8+7)/7
+        (size_of::<VI>() * 8 + 7) / 7
     }
 }
 

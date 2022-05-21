@@ -204,6 +204,9 @@ mod tests {
     #[test]
     fn test_regression_22() {
         let mut encoded: Vec<u8> = (0x112233 as u64).encode_var_vec();
-        assert_eq!(encoded.as_slice().read_varint::<i8>().unwrap_err().kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(
+            encoded.as_slice().read_varint::<i8>().unwrap_err().kind(),
+            std::io::ErrorKind::InvalidData
+        );
     }
 }

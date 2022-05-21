@@ -49,12 +49,37 @@ macro_rules! impl_fixedint {
 
             fn encode_fixed(self, dst: &mut [u8]) {
                 assert_eq!(dst.len(), Self::REQUIRED_SPACE);
-                let encoded = unsafe { &*(&self as *const $t as *const [u8; $sz]) };
+
+                #[allow(unused_mut)]
+                let mut encoded = unsafe { &*(&self as *const $t as *const [u8; $sz]) };
+
+                #[cfg(target_endian = "big")]
+                {
+                    let mut encoded_rev = [0 as u8; Self::REQUIRED_SPACE];
+                    encoded_rev.copy_from_slice(encoded);
+                    encoded_rev.reverse();
+                    dst.clone_from_slice(&encoded_rev);
+                    return;
+                }
+
                 dst.clone_from_slice(encoded);
             }
+
             fn decode_fixed(src: &[u8]) -> $t {
                 assert_eq!(src.len(), Self::REQUIRED_SPACE);
-                return unsafe { (src.as_ptr() as *const $t).read_unaligned() };
+                #[cfg(target_endian = "little")]
+                let src_fin = src;
+
+                #[cfg(target_endian = "big")]
+                let mut src_fin = [0 as u8; Self::REQUIRED_SPACE];
+
+                #[cfg(target_endian = "big")]
+                {
+                    src_fin.copy_from_slice(src);
+                    src_fin.reverse();
+                }
+
+                return unsafe { (src_fin.as_ptr() as *const $t).read_unaligned() };
             }
         }
     };

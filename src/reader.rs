@@ -5,7 +5,7 @@ use crate::fixed::FixedInt;
 use crate::varint::{VarInt, VarIntMaxSize, MSB};
 
 #[cfg(feature = "tokio_async")]
-use tokio::io::{AsyncReadExt, AsyncRead};
+use tokio::io::{AsyncRead, AsyncReadExt};
 
 #[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncRead, io::AsyncReadExt};
@@ -40,7 +40,10 @@ pub struct VarIntProcessor {
 
 impl VarIntProcessor {
     fn new<VI: VarIntMaxSize>() -> VarIntProcessor {
-        VarIntProcessor { maxsize: VI::varint_max_size(), ..VarIntProcessor::default() }
+        VarIntProcessor {
+            maxsize: VI::varint_max_size(),
+            ..VarIntProcessor::default()
+        }
     }
     fn push(&mut self, b: u8) -> Result<()> {
         if self.i >= self.maxsize {
