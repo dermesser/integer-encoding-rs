@@ -28,6 +28,10 @@ maintained with the occasional fix for edge cases and depends on Tokio v0.2.
 `FixedInt` casts integers to bytes by either copying the underlying memory or
 performing a transmutation. The encoded values use are little-endian.
 
+However, a trait method is implemented for all integer types allowing convenient conversion between
+little and big endian. That is, if you receive a big-endian on the wire and decode it, it will first
+be interpreted as little-endian; converting will recover the correct value.
+
 ## VarInt
 
 `VarInt` encodes integers in blocks of 7 bits; the MSB is set for every byte but

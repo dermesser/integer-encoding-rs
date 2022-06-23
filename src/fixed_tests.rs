@@ -21,6 +21,30 @@ mod tests {
         assert_eq!(result, vec![0, 1]);
     }
     #[test]
+    fn test_u16_endian() {
+        let le = 1 as u16;
+        let be = le.switch_endianness();
+        assert_eq!(be, 256);
+    }
+    #[test]
+    fn test_u32_endian() {
+        let le = 1 as u32;
+        let be = le.switch_endianness();
+        assert_eq!(be, 1 << 24);
+        assert_eq!(be.switch_endianness(), 1);
+    }
+    #[test]
+    fn test_allones_endian() {
+        assert_eq!(u64::MAX.switch_endianness(), u64::MAX);
+    }
+    #[test]
+    fn test_signed_endian() {
+        // x86: two's complement, LE.
+        let le = -2 as i16;
+        let be = le.switch_endianness();
+        assert_eq!(be, -257);
+    }
+    #[test]
     fn test_u8_enc() {
         let result = (255 as u8).encode_fixed_vec();
         assert_eq!(result, vec![255]);
