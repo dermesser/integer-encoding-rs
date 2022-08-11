@@ -22,6 +22,7 @@
 //!     assert_eq!(Some((b, 2)), i32::decode_var(&encoded_byte_vec));
 //! }
 //! ```
+#![forbid(unsafe_code)]
 
 mod fixed;
 mod fixed_tests;
