@@ -75,38 +75,11 @@ mod tests {
     }
     */
 
-    #[should_panic]
-    #[test]
-    fn test_switch() {
-        impl FixedInt for i128 {
-            const REQUIRED_SPACE: usize = 256;
-
-            fn required_space() -> usize {
-                todo!()
-            }
-
-            fn encode_fixed(self, dst: &mut [u8]) {
-                todo!()
-            }
-
-            fn decode_fixed(src: &[u8]) -> Self {
-                todo!()
-            }
-
-            fn encode_fixed_light<'a>(&'a self) -> &'a [u8] {
-                todo!()
-            }
-        }
-
-        let int = -32767i128;
-        let int = int.switch_endianness();
-    }
-
     #[test]
     fn test_i32_enc_light() {
         let int = -32767 as i32;
         let result = int.encode_fixed_light();
-        assert_eq!(result, &[1, 128, 255, 255]);
+        assert_eq!(result, [1, 128, 255, 255]);
     }
     #[test]
     fn test_all_identity() {
