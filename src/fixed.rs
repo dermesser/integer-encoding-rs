@@ -32,9 +32,15 @@ pub trait FixedInt: Sized + Copy {
     /// on big-endian machines). If you receive a big-endian integer, and would like it to be
     /// treated correctly, use this helper method to convert between endiannesses.
     fn switch_endianness(self) -> Self {
+        // an implementation of `FixedInt` may not provide the correct space,
+        // resulting in UB.
+        assert_eq!(size_of::<Self>(), Self::REQUIRED_SPACE);
         // Switch to intrinsic bswap when out of nightly.
         unsafe {
-            let sl = std::slice::from_raw_parts_mut(transmute::<&Self, *mut u8>(&self), Self::REQUIRED_SPACE);
+            let sl = std::slice::from_raw_parts_mut(
+                transmute::<&Self, *mut u8>(&self),
+                Self::REQUIRED_SPACE,
+            );
             sl.reverse();
             *transmute::<*const u8, &Self>(sl.as_ptr())
         }
