@@ -1,28 +1,30 @@
 use std::convert::TryInto;
 use std::mem::size_of;
 
-/// `FixedInt` provides encoding/decoding to and from fixed int representations.
+/// `FixedInt` provides encoding/decoding to and from fixed int representations. Note that current
+/// Rust versions already provide this functionality via the `to_le_bytes()` and `to_be_bytes()`
+/// methods.
 ///
 /// The emitted bytestring contains the bytes of the integer in machine endianness.
 pub trait FixedInt: Sized + Copy {
     type Bytes: AsRef<[u8]>;
+    const ENCODED_SIZE: usize = size_of::<Self>();
 
-    /// Encode a value into the given slice. `dst` must be exactly `REQUIRED_SPACE` bytes.
-    fn encode_fixed(self, dst: &mut [u8]);
-    /// Decode a value from the given slice. `src` must be exactly `REQUIRED_SPACE` bytes.
-    fn decode_fixed(src: &[u8]) -> Self;
+    /// Encode a value into the given slice using machine endianness. Returns `None` if `dst`
+    /// doesn't provide enough space to encode this integer.
+    fn encode_fixed(self, dst: &mut [u8]) -> Option<()>;
     /// Returns the representation of [`FixedInt`] as [`Bytes`], the little-endian representation
     /// of self in the stack.
     fn encode_fixed_light(self) -> Self::Bytes;
 
+    /// Decode a value from the given slice assuming little-endian.
+    fn decode_le_fixed(src: &[u8]) -> Option<Self>;
+    /// Decode a value from the given slice assuming big-endian.
+    fn decode_be_fixed(src: &[u8]) -> Option<Self>;
+
     /// Helper: Encode the value and return a Vec.
     fn encode_fixed_vec(self) -> Vec<u8> {
         self.encode_fixed_light().as_ref().to_vec()
-    }
-
-    /// Helper: Decode the value from the Vec.
-    fn decode_fixed_vec(v: &Vec<u8>) -> Self {
-        Self::decode_fixed(&v[..])
     }
 
     /// integer-encoding-rs always emits and receives little-endian integers (converting implicitly
@@ -36,23 +38,33 @@ macro_rules! impl_fixedint {
         impl FixedInt for $t {
             type Bytes = [u8; size_of::<$t>()];
 
+            fn encode_fixed(self, dst: &mut [u8]) -> Option<()> {
+                if dst.len() == size_of::<Self>() {
+                    dst.clone_from_slice(&self.to_le_bytes());
+                    Some(())
+                } else {
+                    None
+                }
+            }
+
             fn encode_fixed_light(self) -> Self::Bytes {
                 self.to_le_bytes()
             }
 
-            fn encode_fixed(self, dst: &mut [u8]) {
-                assert_eq!(dst.len(), size_of::<Self>());
-                dst.clone_from_slice(&self.to_le_bytes());
+            fn decode_le_fixed(src: &[u8]) -> Option<Self> {
+                if src.len() == size_of::<Self>() {
+                    Some(Self::from_le_bytes(src.try_into().unwrap()))
+                } else {
+                    None
+                }
             }
 
-            #[cfg(target_endian = "little")]
-            fn decode_fixed(src: &[u8]) -> Self {
-                Self::from_le_bytes(src.try_into().unwrap())
-            }
-
-            #[cfg(target_endian = "big")]
-            fn decode_fixed(src: &[u8]) -> $t {
-                Self::from_be_bytes(src.try_into().unwrap())
+            fn decode_be_fixed(src: &[u8]) -> Option<Self> {
+                if src.len() == size_of::<Self>() {
+                    Some(Self::from_be_bytes(src.try_into().unwrap()))
+                } else {
+                    None
+                }
             }
 
             fn switch_endianness(self) -> Self {
