@@ -14,7 +14,7 @@
 //! fn main() {
 //!     let a: u32 = 344;
 //!     let encoded_byte_slice = a.encode_fixed_light();
-//!     assert_eq!(a, u32::decode_fixed(&encoded_byte_slice));
+//!     assert_eq!(Some(a), u32::decode_fixed(&encoded_byte_slice));
 //!     assert_eq!(4, encoded_byte_slice.len());
 //!
 //!     let b: i32 = -111;

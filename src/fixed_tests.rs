@@ -92,23 +92,14 @@ mod tests {
         let g: i32 = -17;
         let h: i64 = -17;
 
-        assert_eq!(a, FixedInt::decode_fixed_vec(&a.encode_fixed_vec()));
-        assert_eq!(b, FixedInt::decode_fixed_vec(&b.encode_fixed_vec()));
-        assert_eq!(c, FixedInt::decode_fixed_vec(&c.encode_fixed_vec()));
-        assert_eq!(d, FixedInt::decode_fixed_vec(&d.encode_fixed_vec()));
-        assert_eq!(e, FixedInt::decode_fixed_vec(&e.encode_fixed_vec()));
-        assert_eq!(f, FixedInt::decode_fixed_vec(&f.encode_fixed_vec()));
-        assert_eq!(g, FixedInt::decode_fixed_vec(&g.encode_fixed_vec()));
-        assert_eq!(h, FixedInt::decode_fixed_vec(&h.encode_fixed_vec()));
-
-        assert_eq!(a, FixedInt::decode_fixed(&a.encode_fixed_light()));
-        assert_eq!(b, FixedInt::decode_fixed(&b.encode_fixed_light()));
-        assert_eq!(c, FixedInt::decode_fixed(&c.encode_fixed_light()));
-        assert_eq!(d, FixedInt::decode_fixed(&d.encode_fixed_light()));
-        assert_eq!(e, FixedInt::decode_fixed(&e.encode_fixed_light()));
-        assert_eq!(f, FixedInt::decode_fixed(&f.encode_fixed_light()));
-        assert_eq!(g, FixedInt::decode_fixed(&g.encode_fixed_light()));
-        assert_eq!(h, FixedInt::decode_fixed(&h.encode_fixed_light()));
+        assert_eq!(a, FixedInt::decode_fixed(&a.encode_fixed_light()).unwrap());
+        assert_eq!(b, FixedInt::decode_fixed(&b.encode_fixed_light()).unwrap());
+        assert_eq!(c, FixedInt::decode_fixed(&c.encode_fixed_light()).unwrap());
+        assert_eq!(d, FixedInt::decode_fixed(&d.encode_fixed_light()).unwrap());
+        assert_eq!(e, FixedInt::decode_fixed(&e.encode_fixed_light()).unwrap());
+        assert_eq!(f, FixedInt::decode_fixed(&f.encode_fixed_light()).unwrap());
+        assert_eq!(g, FixedInt::decode_fixed(&g.encode_fixed_light()).unwrap());
+        assert_eq!(h, FixedInt::decode_fixed(&h.encode_fixed_light()).unwrap());
     }
 
     #[test]
@@ -141,13 +132,13 @@ mod tests {
     #[should_panic]
     #[test]
     fn test_invalid_decode_size() {
-        assert_eq!(33, u64::decode_fixed(&[1, 0, 0, 0, 0, 1]));
+        assert_eq!(33, u64::decode_fixed(&[1, 0, 0, 0, 0, 1]).unwrap());
     }
     #[should_panic]
     #[test]
     fn test_invalid_encode_size() {
         let mut buf = [0 as u8; 4];
-        (11 as u64).encode_fixed(&mut buf);
+        (11 as u64).encode_fixed(&mut buf).unwrap();
     }
 
     #[cfg(any(feature = "tokio_async", feature = "futures_async"))]

@@ -115,47 +115,35 @@ impl<R: Read> VarIntReader for R {
 }
 
 /// A trait for reading FixedInts from any other `Reader`.
-///
-/// On EOF, an io::Error with io::ErrorKind::UnexpectedEof is returned.
 pub trait FixedIntReader {
-    fn read_le_fixedint<FI: FixedInt>(&mut self) -> Result<FI>;
-    fn read_be_fixedint<FI: FixedInt>(&mut self) -> Result<FI>;
+    /// Read a fixed integer from a reader. How many bytes are read depends on `FI`.
+    ///
+    /// On EOF, an io::Error with io::ErrorKind::UnexpectedEof is returned.
+    fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI>;
 }
 
 /// Like FixedIntReader, but returns a future.
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 pub trait FixedIntAsyncReader {
-    async fn read_le_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI>;
-    async fn read_be_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI>;
+    async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI>;
 }
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait]
 impl<AR: AsyncRead + Unpin + Send> FixedIntAsyncReader for AR {
-    async fn read_le_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
+    async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
         self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])
             .await?;
-        Ok(FI::decode_le_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
-    }
-    async fn read_be_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
-        let mut buf = [0 as u8; 8];
-        self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])
-            .await?;
-        Ok(FI::decode_be_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
+        Ok(FI::decode_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
     }
 }
 
 impl<R: Read> FixedIntReader for R {
-    fn read_le_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
+    fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
         self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])?;
-        Ok(FI::decode_le_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
-    }
-    fn read_be_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
-        let mut buf = [0 as u8; 8];
-        self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])?;
-        Ok(FI::decode_be_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
+        Ok(FI::decode_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
     }
 }
