@@ -5,7 +5,10 @@ name: Actions CI
 jobs:
   build_and_test:
     name: integer-encoding-rs
-    runs-on: ubuntu-latest
+    strategy:
+        features: ["tokio_async", "futures_async", ""]
+        platform: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -13,16 +16,9 @@ jobs:
           toolchain: stable
       - uses: actions-rs/cargo@v1
         with:
-          command: test
-          args: --features tokio_async
+          command: check
+          args: --no-default-features --features=${{ matrix.features }}
       - uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --features futures_async
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --examples
+          args: --no-default-features --features=${{ matrix.features }}
