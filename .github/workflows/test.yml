@@ -6,6 +6,8 @@ jobs:
   build_and_test:
     name: integer-encoding-rs
     strategy:
+      fail-fast: false
+      matrix:
         features: ["tokio_async", "futures_async", ""]
         platform: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.platform }}
