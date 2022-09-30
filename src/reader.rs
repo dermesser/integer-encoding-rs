@@ -134,15 +134,16 @@ pub trait FixedIntAsyncReader {
 impl<AR: AsyncRead + Unpin + Send> FixedIntAsyncReader for AR {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
-        self.read_exact(&mut buf[0..FI::required_space()]).await?;
-        Ok(FI::decode_fixed(&buf[0..FI::required_space()]))
+        self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])
+            .await?;
+        Ok(FI::decode_fixed(&buf[0..std::mem::size_of::<FI>()]))
     }
 }
 
 impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
-        self.read_exact(&mut buf[0..FI::required_space()])?;
-        Ok(FI::decode_fixed(&buf[0..FI::required_space()]))
+        self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])?;
+        Ok(FI::decode_fixed(&buf[0..std::mem::size_of::<FI>()]))
     }
 }

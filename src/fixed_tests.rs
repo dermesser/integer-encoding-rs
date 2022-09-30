@@ -79,7 +79,7 @@ mod tests {
     fn test_i32_enc_light() {
         let int = -32767 as i32;
         let result = int.encode_fixed_light();
-        assert_eq!(result, &[1, 128, 255, 255]);
+        assert_eq!(result, [1, 128, 255, 255]);
     }
     #[test]
     fn test_all_identity() {
