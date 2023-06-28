@@ -25,7 +25,7 @@ pub trait VarIntReader {
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 /// Like a VarIntReader, but returns a future.
-#[async_trait::async_trait]
+#[async_trait::async_trait(?Send)]
 pub trait VarIntAsyncReader {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI>;
 }
@@ -65,8 +65,8 @@ impl VarIntProcessor {
 }
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
-impl<AR: AsyncRead + Unpin + Send> VarIntAsyncReader for AR {
+#[async_trait::async_trait(?Send)]
+impl<AR: AsyncRead + Unpin> VarIntAsyncReader for AR {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI> {
         let mut buf = [0 as u8; 1];
         let mut p = VarIntProcessor::new::<VI>();
@@ -124,14 +124,14 @@ pub trait FixedIntReader {
 
 /// Like FixedIntReader, but returns a future.
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
+#[async_trait::async_trait(?Send)]
 pub trait FixedIntAsyncReader {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI>;
 }
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
-impl<AR: AsyncRead + Unpin + Send> FixedIntAsyncReader for AR {
+#[async_trait::async_trait(?Send)]
+impl<AR: AsyncRead + Unpin> FixedIntAsyncReader for AR {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0 as u8; 8];
         self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])
