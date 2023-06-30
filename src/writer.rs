@@ -17,16 +17,16 @@ pub trait VarIntWriter {
 
 /// Like VarIntWriter, but asynchronous.
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
+#[async_trait::async_trait(?Send)]
 pub trait VarIntAsyncWriter {
     /// Write a VarInt integer to an asynchronous writer.
-    async fn write_varint_async<VI: VarInt + Send>(&mut self, n: VI) -> Result<usize>;
+    async fn write_varint_async<VI: VarInt>(&mut self, n: VI) -> Result<usize>;
 }
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
-impl<AW: AsyncWrite + Send + Unpin> VarIntAsyncWriter for AW {
-    async fn write_varint_async<VI: VarInt + Send>(&mut self, n: VI) -> Result<usize> {
+#[async_trait::async_trait(?Send)]
+impl<AW: AsyncWrite + Unpin> VarIntAsyncWriter for AW {
+    async fn write_varint_async<VI: VarInt>(&mut self, n: VI) -> Result<usize> {
         let mut buf = [0 as u8; 10];
         let b = n.encode_var(&mut buf);
         self.write_all(&buf[0..b]).await?;
@@ -50,15 +50,15 @@ pub trait FixedIntWriter {
 }
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
+#[async_trait::async_trait(?Send)]
 pub trait FixedIntAsyncWriter {
-    async fn write_fixedint_async<FI: FixedInt + Send>(&mut self, n: FI) -> Result<usize>;
+    async fn write_fixedint_async<FI: FixedInt>(&mut self, n: FI) -> Result<usize>;
 }
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
-#[async_trait::async_trait]
-impl<AW: AsyncWrite + Unpin + Send> FixedIntAsyncWriter for AW {
-    async fn write_fixedint_async<FI: FixedInt + Send>(&mut self, n: FI) -> Result<usize> {
+#[async_trait::async_trait(?Send)]
+impl<AW: AsyncWrite + Unpin> FixedIntAsyncWriter for AW {
+    async fn write_fixedint_async<FI: FixedInt>(&mut self, n: FI) -> Result<usize> {
         let mut buf = [0 as u8; 8];
         n.encode_fixed(&mut buf[..std::mem::size_of::<FI>()]);
         self.write_all(&buf[..std::mem::size_of::<FI>()]).await?;
