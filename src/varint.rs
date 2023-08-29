@@ -39,6 +39,11 @@ pub trait VarInt: Sized + Copy {
     /// slice (can be used to read several consecutive values from a big slice)
     /// return None if all bytes has MSB set.
     fn decode_var(src: &[u8]) -> Option<(Self, usize)>;
+    /// Decode a value from the slice, as with `decode_var`, but if `allow_non_minimal_encoding` is false,
+    /// then return None if the slice does not contain the minimum representation of the value. For example, if the slice is [152] it
+    /// will fail because this can be represented as [24]. Use this function if round trip encoding
+    /// is required.
+    fn decode_var_exact(src: &[u8], allow_non_minimal_encoding: bool) -> Option<(Self, usize)>;
     /// Encode a value into the slice. The slice must be at least `required_space()` bytes long.
     /// The number of bytes taken by the encoded integer is returned.
     fn encode_var(self, src: &mut [u8]) -> usize;
@@ -84,7 +89,15 @@ macro_rules! impl_varint {
             }
 
             fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
-                let (n, s) = u64::decode_var(src)?;
+                let (n, s) = Self::decode_var_exact(src, true)?;
+                Some((n as Self, s))
+            }
+
+            fn decode_var_exact(
+                src: &[u8],
+                allow_non_minimal_encoding: bool,
+            ) -> Option<(Self, usize)> {
+                let (n, s) = decode_exact::<$t>(src, allow_non_minimal_encoding)?;
                 Some((n as Self, s))
             }
 
@@ -100,8 +113,16 @@ macro_rules! impl_varint {
             }
 
             fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
-                let (n, s) = i64::decode_var(src)?;
+                let (n, s) = Self::decode_var_exact(src, true)?;
                 Some((n as Self, s))
+            }
+
+            fn decode_var_exact(
+                src: &[u8],
+                allow_non_minimal_encoding: bool,
+            ) -> Option<(Self, usize)> {
+                let (n, s) = decode_exact::<$t>(src, allow_non_minimal_encoding)?;
+                Some((zigzag_decode(n) as Self, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -121,6 +142,42 @@ impl_varint!(i32, signed);
 impl_varint!(i16, signed);
 impl_varint!(i8, signed);
 
+fn decode_exact<VI>(src: &[u8], allow_non_minimal_encoding: bool) -> Option<(u64, usize)> {
+    let mut result: u64 = 0;
+    let mut shift: u32 = 0;
+
+    //let max_shift : u32= (VI::varint_max_size() as u32 - 1) * 7;
+    let mut success = false;
+    for b in src.iter() {
+        let msb_dropped = b & DROP_MSB;
+        // Check if there is space to shift so that we don't overflow
+        if (msb_dropped as u64).leading_zeros() - ((size_of::<u64>() - size_of::<VI>()) as u32 * 8)
+            < shift
+        {
+            success = false;
+            break;
+        }
+        result |= (msb_dropped as u64) << shift;
+        shift += 7;
+
+        // a zero byte is only allowed if it is the first byte
+        if !allow_non_minimal_encoding && *b == 0 && shift != 0 {
+            success = false;
+            break;
+        }
+        if b & MSB == 0 || shift > (9 * 7) {
+            success = b & MSB == 0;
+            break;
+        }
+    }
+
+    if success {
+        Some((result, shift as usize / 7 as usize))
+    } else {
+        None
+    }
+}
+
 // Below are the "base implementations" doing the actual encodings; all other integer types are
 // first cast to these biggest types before being encoded.
 
@@ -131,26 +188,12 @@ impl VarInt for u64 {
 
     #[inline]
     fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
-        let mut result: u64 = 0;
-        let mut shift = 0;
+        Self::decode_var_exact(src, true)
+    }
 
-        let mut success = false;
-        for b in src.iter() {
-            let msb_dropped = b & DROP_MSB;
-            result |= (msb_dropped as u64) << shift;
-            shift += 7;
-
-            if b & MSB == 0 || shift > (9 * 7) {
-                success = b & MSB == 0;
-                break;
-            }
-        }
-
-        if success {
-            Some((result, shift / 7))
-        } else {
-            None
-        }
+    #[inline]
+    fn decode_var_exact(src: &[u8], allow_non_minimal_encoding: bool) -> Option<(Self, usize)> {
+        decode_exact::<u64>(src, allow_non_minimal_encoding)
     }
 
     #[inline]
@@ -178,6 +221,15 @@ impl VarInt for i64 {
     #[inline]
     fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
         if let Some((result, size)) = u64::decode_var(src) {
+            Some((zigzag_decode(result) as Self, size))
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    fn decode_var_exact(src: &[u8], allow_non_minimal_encoding: bool) -> Option<(Self, usize)> {
+        if let Some((result, size)) = u64::decode_var_exact(src, allow_non_minimal_encoding) {
             Some((zigzag_decode(result) as Self, size))
         } else {
             None
