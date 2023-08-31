@@ -68,7 +68,7 @@ impl VarIntProcessor {
 #[async_trait::async_trait(?Send)]
 impl<AR: AsyncRead + Unpin> VarIntAsyncReader for AR {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI> {
-        let mut buf = [0 as u8; 1];
+        let mut buf = [0_u8; 1];
         let mut p = VarIntProcessor::new::<VI>();
 
         while !p.finished() {
@@ -92,7 +92,7 @@ impl<AR: AsyncRead + Unpin> VarIntAsyncReader for AR {
 
 impl<R: Read> VarIntReader for R {
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI> {
-        let mut buf = [0 as u8; 1];
+        let mut buf = [0_u8; 1];
         let mut p = VarIntProcessor::new::<VI>();
 
         while !p.finished() {
@@ -133,7 +133,7 @@ pub trait FixedIntAsyncReader {
 #[async_trait::async_trait(?Send)]
 impl<AR: AsyncRead + Unpin> FixedIntAsyncReader for AR {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
-        let mut buf = [0 as u8; 8];
+        let mut buf = [0_u8; 8];
         self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])
             .await?;
         Ok(FI::decode_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
@@ -142,7 +142,7 @@ impl<AR: AsyncRead + Unpin> FixedIntAsyncReader for AR {
 
 impl<R: Read> FixedIntReader for R {
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI> {
-        let mut buf = [0 as u8; 8];
+        let mut buf = [0_u8; 8];
         self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])?;
         Ok(FI::decode_fixed(&buf[0..std::mem::size_of::<FI>()]).unwrap())
     }

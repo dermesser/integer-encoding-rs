@@ -147,7 +147,7 @@ impl VarInt for u64 {
         }
 
         if success {
-            Some((result, shift / 7 as usize))
+            Some((result, shift / 7))
         } else {
             None
         }
@@ -187,7 +187,7 @@ impl VarInt for i64 {
     #[inline]
     fn encode_var(self, dst: &mut [u8]) -> usize {
         assert!(dst.len() >= self.required_space());
-        let mut n: u64 = zigzag_encode(self as i64);
+        let mut n: u64 = zigzag_encode(self);
         let mut i = 0;
 
         while n >= 0x80 {

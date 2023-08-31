@@ -27,7 +27,7 @@ pub trait VarIntAsyncWriter {
 #[async_trait::async_trait(?Send)]
 impl<AW: AsyncWrite + Unpin> VarIntAsyncWriter for AW {
     async fn write_varint_async<VI: VarInt>(&mut self, n: VI) -> Result<usize> {
-        let mut buf = [0 as u8; 10];
+        let mut buf = [0_u8; 10];
         let b = n.encode_var(&mut buf);
         self.write_all(&buf[0..b]).await?;
         Ok(b)
@@ -36,7 +36,7 @@ impl<AW: AsyncWrite + Unpin> VarIntAsyncWriter for AW {
 
 impl<Inner: Write> VarIntWriter for Inner {
     fn write_varint<VI: VarInt>(&mut self, n: VI) -> Result<usize> {
-        let mut buf = [0 as u8; 10];
+        let mut buf = [0_u8; 10];
         let used = n.encode_var(&mut buf[..]);
 
         self.write_all(&buf[0..used])?;
@@ -59,7 +59,7 @@ pub trait FixedIntAsyncWriter {
 #[async_trait::async_trait(?Send)]
 impl<AW: AsyncWrite + Unpin> FixedIntAsyncWriter for AW {
     async fn write_fixedint_async<FI: FixedInt>(&mut self, n: FI) -> Result<usize> {
-        let mut buf = [0 as u8; 8];
+        let mut buf = [0_u8; 8];
         n.encode_fixed(&mut buf[..std::mem::size_of::<FI>()]);
         self.write_all(&buf[..std::mem::size_of::<FI>()]).await?;
         Ok(std::mem::size_of::<FI>())
@@ -68,7 +68,7 @@ impl<AW: AsyncWrite + Unpin> FixedIntAsyncWriter for AW {
 
 impl<W: Write> FixedIntWriter for W {
     fn write_fixedint<FI: FixedInt>(&mut self, n: FI) -> Result<usize> {
-        let mut buf = [0 as u8; 8];
+        let mut buf = [0_u8; 8];
         n.encode_fixed(&mut buf[..std::mem::size_of::<FI>()]);
 
         self.write_all(&buf[..std::mem::size_of::<FI>()])?;
