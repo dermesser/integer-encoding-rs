@@ -5,10 +5,30 @@ use crate::fixed::FixedInt;
 use crate::varint::{VarInt, VarIntMaxSize, MSB};
 
 #[cfg(feature = "tokio_async")]
-use tokio::io::{AsyncRead, AsyncReadExt};
-
+use tokio::io::AsyncReadExt;
 #[cfg(feature = "futures_async")]
-use futures_util::{io::AsyncRead, io::AsyncReadExt};
+use futures_util::io::AsyncReadExt;
+
+#[cfg(all(any(feature = "tokio_async", feature = "futures_async"), feature = "sendable_io_traits"))]
+mod helper_traits {
+    #[cfg(feature = "tokio_async")]
+    use tokio::io::AsyncRead;
+    #[cfg(feature = "futures_async")]
+    use futures_util::io::AsyncRead;
+    pub(crate) trait AsyncReader: AsyncRead + Unpin + Send {}
+    impl<T> AsyncReader for T where T : AsyncRead + Unpin + Send {}
+}
+
+#[cfg(all(any(feature = "tokio_async", feature = "futures_async"), not(feature = "sendable_io_traits")))]
+mod helper_traits {
+    #[cfg(feature = "tokio_async")]
+    use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite};
+    #[cfg(feature = "futures_async")]
+    use futures_util::{io::AsyncRead, io::AsyncReadExt, AsyncWrite};
+    pub(crate) trait AsyncReader: AsyncRead + Unpin {}
+    impl<T> AsyncReader for T where T : AsyncRead + Unpin {}
+}
+use helper_traits::AsyncReader;
 
 /// A trait for reading VarInts from any other `Reader`.
 ///
@@ -66,7 +86,7 @@ impl VarIntProcessor {
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait(?Send)]
-impl<AR: AsyncRead + Unpin> VarIntAsyncReader for AR {
+impl<AR: AsyncReader> VarIntAsyncReader for AR {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI> {
         let mut buf = [0_u8; 1];
         let mut p = VarIntProcessor::new::<VI>();
@@ -131,7 +151,7 @@ pub trait FixedIntAsyncReader {
 
 #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 #[async_trait::async_trait(?Send)]
-impl<AR: AsyncRead + Unpin> FixedIntAsyncReader for AR {
+impl<AR: AsyncReader> FixedIntAsyncReader for AR {
     async fn read_fixedint_async<FI: FixedInt>(&mut self) -> Result<FI> {
         let mut buf = [0_u8; 8];
         self.read_exact(&mut buf[0..std::mem::size_of::<FI>()])

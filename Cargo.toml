@@ -20,7 +20,6 @@ bencher = "~0.1"
 
 [[example]]
 name = "encode_varint_from_stdin"
-required-features = ["tokio_async"]
 
 [[example]]
 name = "read_write_file"
@@ -31,11 +30,15 @@ name = "main"
 harness = false
 
 [features]
+default = ["sendable_io_traits"]
+
+# Requires that AsyncRead and AsyncWrite implementors are Send.
+sendable_io_traits = []
 # Enable one of these features if you want to use the AsyncRead/AsyncWrite traits from
 # the futures crate instead of those from tokio.
 tokio_async = ["tokio", "async-trait"]
 futures_async = ["futures-util", "async-trait"]
 
 [package.metadata.docs.rs]
-features = ["tokio_async"]
+features = ["tokio_async", "sendable_io_traits"]
 
