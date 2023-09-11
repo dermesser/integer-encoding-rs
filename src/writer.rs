@@ -22,12 +22,14 @@ mod helper_traits {
 #[cfg(all(any(feature = "tokio_async", feature = "futures_async"), not(feature = "sendable_io_traits")))]
 mod helper_traits {
     #[cfg(feature = "tokio_async")]
-    use tokio::io::AAsyncWrite;
+    use tokio::io::AsyncWrite;
     #[cfg(feature = "futures_async")]
     use futures_util::AsyncWrite;
     pub(crate) trait AsyncWriter: AsyncWrite + Unpin {}
     impl<T> AsyncWriter for T where T : AsyncWrite + Unpin {}
 }
+
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 use helper_traits::AsyncWriter;
 
 /// A trait for writing integers in VarInt encoding to any `Write` type. This packs encoding and

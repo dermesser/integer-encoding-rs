@@ -28,6 +28,8 @@ mod helper_traits {
     pub(crate) trait AsyncReader: AsyncRead + Unpin {}
     impl<T> AsyncReader for T where T : AsyncRead + Unpin {}
 }
+
+#[cfg(any(feature = "tokio_async", feature = "futures_async"))]
 use helper_traits::AsyncReader;
 
 /// A trait for reading VarInts from any other `Reader`.
