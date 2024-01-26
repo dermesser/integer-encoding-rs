@@ -51,6 +51,12 @@ mod tests {
     }
 
     #[test]
+    fn test_decode_max_u64_plus_one() {
+        let max_vec_encoded = vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x02];
+        assert!(u64::decode_var(max_vec_encoded.as_slice()).is_none());
+    }
+
+    #[test]
     fn test_encode_i64() {
         assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
         assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());

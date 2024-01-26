@@ -140,8 +140,11 @@ impl VarInt for u64 {
             result |= (msb_dropped as u64) << shift;
             shift += 7;
 
-            if b & MSB == 0 || shift > (9 * 7) {
-                success = b & MSB == 0;
+            if shift > (9 * 7) {
+                success = *b == 1;
+                break;
+            } else if b & MSB == 0 {
+                success = true;
                 break;
             }
         }
