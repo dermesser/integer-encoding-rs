@@ -4,7 +4,10 @@ mod tests {
     use crate::reader::VarIntAsyncReader;
     #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
     use crate::writer::VarIntAsyncWriter;
-    use crate::{reader::VarIntReader, varint::VarInt, writer::VarIntWriter};
+
+    use crate::reader::VarIntReader;
+    use crate::varint::VarInt;
+    use crate::writer::VarIntWriter;
 
     #[test]
     fn test_required_space() {
