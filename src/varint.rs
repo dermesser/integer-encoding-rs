@@ -85,12 +85,7 @@ macro_rules! impl_varint {
 
             fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
                 let (n, s) = u64::decode_var(src)?;
-                // BUGIFX: this check is required to ensure that we actually return `None` when `src` has a value that would overflow `Self`.
-                if n > (Self::MAX as u64) {
-                    None
-                } else {
-                    Some((n as Self, s))
-                }
+                Some((n as Self, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -106,12 +101,7 @@ macro_rules! impl_varint {
 
             fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
                 let (n, s) = i64::decode_var(src)?;
-                // BUGIFX: this check is required to ensure that we actually return `None` when `src` has a value that would overflow `Self`.
-                if n > (Self::MAX as i64) || n < (Self::MIN as i64) {
-                    None
-                } else {
-                    Some((n as Self, s))
-                }
+                Some((n as Self, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
