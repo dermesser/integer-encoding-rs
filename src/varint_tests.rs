@@ -35,7 +35,7 @@ mod tests {
         }
         for i in 16400 as u64..16500 {
             assert_eq!(
-                u64::decode_var(&i.encode_var_vec().as_slice()).unwrap(),
+                u64::decode_var(i.encode_var_vec().as_slice()).unwrap(),
                 (i, 3)
             );
         }
