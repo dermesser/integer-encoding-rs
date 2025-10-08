@@ -60,18 +60,18 @@ pub trait FixedIntAsyncWriter {
 impl<AW: AsyncWrite + Unpin> FixedIntAsyncWriter for AW {
     async fn write_fixedint_async<FI: FixedInt>(&mut self, n: FI) -> Result<usize> {
         let mut buf = [0_u8; 8];
-        n.encode_fixed(&mut buf[..std::mem::size_of::<FI>()]);
-        self.write_all(&buf[..std::mem::size_of::<FI>()]).await?;
-        Ok(std::mem::size_of::<FI>())
+        n.encode_fixed(&mut buf[..size_of::<FI>()]);
+        self.write_all(&buf[..size_of::<FI>()]).await?;
+        Ok(size_of::<FI>())
     }
 }
 
 impl<W: Write> FixedIntWriter for W {
     fn write_fixedint<FI: FixedInt>(&mut self, n: FI) -> Result<usize> {
         let mut buf = [0_u8; 8];
-        n.encode_fixed(&mut buf[..std::mem::size_of::<FI>()]);
+        n.encode_fixed(&mut buf[..size_of::<FI>()]);
 
-        self.write_all(&buf[..std::mem::size_of::<FI>()])?;
-        Ok(std::mem::size_of::<FI>())
+        self.write_all(&buf[..size_of::<FI>()])?;
+        Ok(size_of::<FI>())
     }
 }

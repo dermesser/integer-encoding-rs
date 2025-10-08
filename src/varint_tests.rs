@@ -11,29 +11,29 @@ mod tests {
 
     #[test]
     fn test_required_space() {
-        assert_eq!((0 as u32).required_space(), 1);
-        assert_eq!((1 as u32).required_space(), 1);
-        assert_eq!((128 as u32).required_space(), 2);
-        assert_eq!((16384 as u32).required_space(), 3);
-        assert_eq!((2097151 as u32).required_space(), 3);
-        assert_eq!((2097152 as u32).required_space(), 4);
+        assert_eq!(0_u32.required_space(), 1);
+        assert_eq!(1_u32.required_space(), 1);
+        assert_eq!(128_u32.required_space(), 2);
+        assert_eq!(16384_u32.required_space(), 3);
+        assert_eq!(2097151_u32.required_space(), 3);
+        assert_eq!(2097152_u32.required_space(), 4);
     }
 
     #[test]
     fn test_encode_u64() {
-        assert_eq!((0 as u32).encode_var_vec(), vec![0b00000000]);
-        assert_eq!((300 as u32).encode_var_vec(), vec![0b10101100, 0b00000010]);
+        assert_eq!(0_u32.encode_var_vec(), vec![0b00000000]);
+        assert_eq!(300_u32.encode_var_vec(), vec![0b10101100, 0b00000010]);
     }
 
     #[test]
     fn test_identity_u64() {
-        for i in 1 as u64..100 {
+        for i in 1_u64..100 {
             assert_eq!(
                 u64::decode_var(i.encode_var_vec().as_slice()).unwrap(),
                 (i, 1)
             );
         }
-        for i in 16400 as u64..16500 {
+        for i in 16400_u64..16500 {
             assert_eq!(
                 u64::decode_var(i.encode_var_vec().as_slice()).unwrap(),
                 (i, 3)
@@ -46,28 +46,25 @@ mod tests {
         let max_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(
             u64::decode_var(max_vec_encoded.as_slice()).unwrap().0,
-            u64::max_value()
+            u64::MAX
         );
     }
 
     #[test]
     fn test_encode_i64() {
-        assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
-        assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());
+        assert_eq!(0_i64.encode_var_vec(), 0_u32.encode_var_vec());
+        assert_eq!(150_i64.encode_var_vec(), 300_u32.encode_var_vec());
+        assert_eq!((-150_i64).encode_var_vec(), 299_u32.encode_var_vec());
         assert_eq!(
-            (-150 as i64).encode_var_vec(),
-            (299 as u32).encode_var_vec()
+            (-2147483648_i64).encode_var_vec(),
+            4294967295_u64.encode_var_vec()
         );
         assert_eq!(
-            (-2147483648 as i64).encode_var_vec(),
-            (4294967295 as u64).encode_var_vec()
-        );
-        assert_eq!(
-            (i64::max_value() as i64).encode_var_vec(),
+            i64::MAX.encode_var_vec(),
             &[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]
         );
         assert_eq!(
-            (i64::min_value() as i64).encode_var_vec(),
+            i64::MIN.encode_var_vec(),
             &[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01]
         );
     }
@@ -77,7 +74,7 @@ mod tests {
         let min_vec_encoded = vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(
             i64::decode_var(min_vec_encoded.as_slice()).unwrap().0,
-            i64::min_value()
+            i64::MIN
         );
     }
 
@@ -86,17 +83,14 @@ mod tests {
         let max_vec_encoded = vec![0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01];
         assert_eq!(
             i64::decode_var(max_vec_encoded.as_slice()).unwrap().0,
-            i64::max_value()
+            i64::MAX
         );
     }
 
     #[test]
     fn test_encode_i16() {
-        assert_eq!((150 as i16).encode_var_vec(), (300 as u32).encode_var_vec());
-        assert_eq!(
-            (-150 as i16).encode_var_vec(),
-            (299 as u32).encode_var_vec()
-        );
+        assert_eq!(150_i16.encode_var_vec(), 300_u32.encode_var_vec());
+        assert_eq!((-150_i16).encode_var_vec(), 299_u32.encode_var_vec());
     }
 
     #[test]
@@ -155,7 +149,7 @@ mod tests {
 
     #[test]
     fn test_unterminated_varint() {
-        let buf = vec![0xff as u8; 12];
+        let buf = vec![0xff_u8; 12];
         let mut read = buf.as_slice();
         assert!(read.read_varint::<u64>().is_err());
     }
@@ -203,7 +197,7 @@ mod tests {
 
     #[test]
     fn test_regression_22() {
-        let encoded: Vec<u8> = (0x112233 as u64).encode_var_vec();
+        let encoded: Vec<u8> = 0x112233_u64.encode_var_vec();
         assert_eq!(
             encoded.as_slice().read_varint::<i8>().unwrap_err().kind(),
             std::io::ErrorKind::InvalidData

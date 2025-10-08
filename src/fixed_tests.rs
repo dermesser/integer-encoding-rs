@@ -12,63 +12,63 @@ mod tests {
 
     #[test]
     fn test_u32_enc() {
-        let result = (32 as u32).encode_fixed_vec();
+        let result = 32_u32.encode_fixed_vec();
         assert_eq!(result, vec![32, 0, 0, 0]);
     }
     #[test]
     fn test_u16_enc() {
-        let result = (256 as u16).encode_fixed_vec();
+        let result = 256_u16.encode_fixed_vec();
         assert_eq!(result, vec![0, 1]);
     }
     #[test]
     fn test_u16_endian() {
-        let le = 1 as u16;
+        let le = 1_u16;
         let be = le.switch_endianness();
         assert_eq!(be, 256);
     }
     #[test]
     fn test_u32_endian() {
-        let le = 1 as u32;
+        let le = 1_u32;
         let be = le.switch_endianness();
         assert_eq!(be, 1 << 24);
         assert_eq!(be.switch_endianness(), 1);
     }
     #[test]
-    fn test_allones_endian() {
+    fn test_all_ones_endian() {
         assert_eq!(u64::MAX.switch_endianness(), u64::MAX);
     }
     #[test]
     fn test_signed_endian() {
         // x86: two's complement, LE.
-        let le = -2 as i16;
+        let le = -2_i16;
         let be = le.switch_endianness();
         assert_eq!(be, -257);
     }
     #[test]
     fn test_u8_enc() {
-        let result = (255 as u8).encode_fixed_vec();
+        let result = 255_u8.encode_fixed_vec();
         assert_eq!(result, vec![255]);
     }
     #[test]
     fn test_i8_enc() {
-        let result = (-1 as i8).encode_fixed_vec();
+        let result = (-1_i8).encode_fixed_vec();
         assert_eq!(result, vec![255]);
     }
     #[test]
     fn test_i16_enc() {
-        let result = (-32768 as i16).encode_fixed_vec();
+        let result = (-32768_i16).encode_fixed_vec();
         assert_eq!(result, vec![0, 128]);
     }
     #[test]
     fn test_i32_enc() {
-        let result = (-32767 as i32).encode_fixed_vec();
+        let result = (-32767_i32).encode_fixed_vec();
         assert_eq!(result, vec![1, 128, 255, 255]);
     }
 
     // This must fail to compile:
     /*
     fn test() -> &'static [u8] {
-        let int = -32767 as i32;
+        let int = -32767_i32;
         let result = int.encode_fixed_light();
         assert_eq!(result, &[1, 128, 255, 255]);
         result
@@ -77,7 +77,7 @@ mod tests {
 
     #[test]
     fn test_i32_enc_light() {
-        let int = -32767 as i32;
+        let int = -32767_i32;
         let result = int.encode_fixed_light();
         assert_eq!(result, [1, 128, 255, 255]);
     }
@@ -137,8 +137,8 @@ mod tests {
     #[should_panic]
     #[test]
     fn test_invalid_encode_size() {
-        let mut buf = [0 as u8; 4];
-        (11 as u64).encode_fixed(&mut buf).unwrap();
+        let mut buf = [0_u8; 4];
+        11_u64.encode_fixed(&mut buf).unwrap();
     }
 
     #[cfg(any(feature = "tokio_async", feature = "futures_async"))]
