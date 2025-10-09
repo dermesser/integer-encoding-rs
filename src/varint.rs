@@ -84,7 +84,7 @@ macro_rules! impl_varint {
 
             fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
                 let (n, s) = u64::decode_var(src)?;
-                Some((n as Self, s))
+                Some((<Self as std::convert::TryFrom<u64>>::try_from(n).ok()?, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
@@ -100,7 +100,7 @@ macro_rules! impl_varint {
 
             fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
                 let (n, s) = i64::decode_var(src)?;
-                Some((n as Self, s))
+                Some((<Self as std::convert::TryFrom<i64>>::try_from(n).ok()?, s))
             }
 
             fn encode_var(self, dst: &mut [u8]) -> usize {
