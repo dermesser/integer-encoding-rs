@@ -209,4 +209,14 @@ mod tests {
             std::io::ErrorKind::InvalidData
         );
     }
+
+    #[test]
+    fn test_decode_var_too_big() {
+        assert_eq!(u8::decode_var(&0x1FF_u64.encode_var_vec()), None, "u8");
+        assert_eq!(u16::decode_var(&0x1FFFF_u64.encode_var_vec()), None, "u16");
+        assert_eq!(u32::decode_var(&0x1FFFFFFFF_u64.encode_var_vec()), None, "u32");
+        assert_eq!(i8::decode_var(&0x80_i64.encode_var_vec()), None, "i8");
+        assert_eq!(i16::decode_var(&0x8000_i64.encode_var_vec()), None, "i16");
+        assert_eq!(i32::decode_var(&0x80000000_i64.encode_var_vec()), None, "i32");
+    }
 }
