@@ -1,7 +1,7 @@
 [package]
 name = "integer-encoding"
-version = "4.0.2"
-authors = ["Lewin Bormann <lbo@spheniscida.de>"]
+version = "4.1.0"
+authors = ["Lewin Bormann <lewin@lewin-bormann.info>"]
 description = "varint+zigzag and fixedint integer encoding/decoding (https://developers.google.com/protocol-buffers/docs/encoding)"
 repository = "https://github.com/dermesser/integer-encoding-rs"
 documentation = "https://docs.rs/integer-encoding/"
@@ -38,4 +38,3 @@ futures_async = ["futures-util", "async-trait"]
 
 [package.metadata.docs.rs]
 features = ["tokio_async"]
-
