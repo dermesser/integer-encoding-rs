@@ -10,7 +10,7 @@ use tokio::io::{AsyncRead, AsyncReadExt};
 #[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncRead, io::AsyncReadExt};
 
-/// A trait for reading VarInts from any other `Reader`.
+/// A trait for reading [`VarInts`] from any other `Reader`.
 ///
 /// It's recommended to use a buffered reader, as many small reads will happen.
 pub trait VarIntReader {
@@ -19,7 +19,7 @@ pub trait VarIntReader {
     /// In general, this always reads a whole varint. If the encoded varint's value is bigger
     /// than the valid value range of `VI`, then the value is truncated.
     ///
-    /// On EOF, an io::Error with io::ErrorKind::UnexpectedEof is returned.
+    /// On EOF, an [`io::Error`] with [`io::ErrorKind::UnexpectedEof`] is returned.
     fn read_varint<VI: VarInt>(&mut self) -> Result<VI>;
 }
 
@@ -30,7 +30,7 @@ pub trait VarIntAsyncReader {
     async fn read_varint_async<VI: VarInt>(&mut self) -> Result<VI>;
 }
 
-/// VarIntProcessor encapsulates the logic for decoding a VarInt byte-by-byte.
+/// `VarIntProcessor` encapsulates the logic for decoding a [`VarInt`] byte-by-byte.
 #[derive(Default)]
 pub struct VarIntProcessor {
     buf: [u8; 10],
@@ -114,11 +114,11 @@ impl<R: Read> VarIntReader for R {
     }
 }
 
-/// A trait for reading FixedInts from any other `Reader`.
+/// A trait for reading [`FixedInts`] from any other `Reader`.
 pub trait FixedIntReader {
     /// Read a fixed integer from a reader. How many bytes are read depends on `FI`.
     ///
-    /// On EOF, an io::Error with io::ErrorKind::UnexpectedEof is returned.
+    /// On EOF, an [`io::Error`] with [`io::ErrorKind::UnexpectedEof`] is returned.
     fn read_fixedint<FI: FixedInt>(&mut self) -> Result<FI>;
 }
 

@@ -9,7 +9,7 @@ use tokio::io::{AsyncWrite, AsyncWriteExt};
 #[cfg(feature = "futures_async")]
 use futures_util::{io::AsyncWrite, io::AsyncWriteExt};
 
-/// A trait for writing integers in VarInt encoding to any `Write` type. This packs encoding and
+/// A trait for writing integers in [`VarInt`] encoding to any [`Write`] type. This packs encoding and
 /// writing into one step.
 pub trait VarIntWriter {
     fn write_varint<VI: VarInt>(&mut self, n: VI) -> Result<usize>;
