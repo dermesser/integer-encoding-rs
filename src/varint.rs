@@ -2,7 +2,7 @@ use std::mem::size_of;
 
 /// Most-significant byte, == 0x80
 pub const MSB: u8 = 0b1000_0000;
-/// All bits except for the most significant. Can be used as bitmask to drop the most-signficant
+/// All bits except for the most significant. Can be used as bitmask to drop the most-significant
 /// bit using `&` (binary-and).
 const DROP_MSB: u8 = 0b0111_1111;
 
@@ -134,9 +134,9 @@ impl VarInt for u64 {
         let mut shift = 0;
 
         let mut success = false;
-        for b in src.iter() {
+        for b in src {
             let msb_dropped = b & DROP_MSB;
-            result |= (msb_dropped as u64) << shift;
+            result |= u64::from(msb_dropped) << shift;
             shift += 7;
 
             if shift > (9 * 7) {
@@ -180,7 +180,7 @@ impl VarInt for i64 {
     #[inline]
     fn decode_var(src: &[u8]) -> Option<(Self, usize)> {
         if let Some((result, size)) = u64::decode_var(src) {
-            Some((zigzag_decode(result) as Self, size))
+            Some((zigzag_decode(result), size))
         } else {
             None
         }
