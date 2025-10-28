@@ -1,7 +1,11 @@
 # integer-encoding-rs
 
-[![crates.io](https://img.shields.io/crates/v/integer-encoding.svg)](https://crates.io/crates/integer-encoding)
-[![Actions CI](https://github.com/dermesser/integer-encoding-rs/workflows/Actions%20CI/badge.svg)](https://github.com/dermesser/integer-encoding-rs/actions)
+[![GitHub repo](https://img.shields.io/badge/github-dermesser/integer--encoding-8da0cb?logo=github)](https://github.com/dermesser/integer-encoding-rs)
+[![crates.io version](https://img.shields.io/crates/v/integer-encoding)](https://crates.io/crates/integer-encoding)
+[![crate usage](https://img.shields.io/crates/d/integer-encoding)](https://crates.io/crates/integer-encoding)
+[![docs.rs status](https://img.shields.io/docsrs/integer-encoding)](https://docs.rs/integer-encoding)
+[![crates.io license](https://img.shields.io/crates/l/integer-encoding)](https://github.com/dermesser/integer-encoding-rs/blob/main/LICENSE)
+[![CI build status](https://github.com/dermesser/integer-encoding-rs/actions/workflows/test.yml/badge.svg)](https://github.com/dermesser/integer-encoding-rs/actions)
 
 [full documentation](https://docs.rs/integer-encoding/)
 
@@ -40,4 +44,3 @@ the last, in which it is cleared.
 Signed values are first converted to an unsigned representation using zigzag
 encoding (also described on the page linked above), and then encoded as every
 other unsigned number.
-
