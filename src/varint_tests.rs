@@ -51,6 +51,12 @@ mod tests {
     }
 
     #[test]
+    fn test_decode_max_u64_plus_one() {
+        let max_vec_encoded = vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x02];
+        assert!(u64::decode_var(max_vec_encoded.as_slice()).is_none());
+    }
+
+    #[test]
     fn test_encode_i64() {
         assert_eq!((0 as i64).encode_var_vec(), (0 as u32).encode_var_vec());
         assert_eq!((150 as i64).encode_var_vec(), (300 as u32).encode_var_vec());
@@ -214,9 +220,17 @@ mod tests {
     fn test_decode_var_too_big() {
         assert_eq!(u8::decode_var(&0x1FF_u64.encode_var_vec()), None, "u8");
         assert_eq!(u16::decode_var(&0x1FFFF_u64.encode_var_vec()), None, "u16");
-        assert_eq!(u32::decode_var(&0x1FFFFFFFF_u64.encode_var_vec()), None, "u32");
+        assert_eq!(
+            u32::decode_var(&0x1FFFFFFFF_u64.encode_var_vec()),
+            None,
+            "u32"
+        );
         assert_eq!(i8::decode_var(&0x80_i64.encode_var_vec()), None, "i8");
         assert_eq!(i16::decode_var(&0x8000_i64.encode_var_vec()), None, "i16");
-        assert_eq!(i32::decode_var(&0x80000000_i64.encode_var_vec()), None, "i32");
+        assert_eq!(
+            i32::decode_var(&0x80000000_i64.encode_var_vec()),
+            None,
+            "i32"
+        );
     }
 }
